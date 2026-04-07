@@ -1,0 +1,244 @@
+<style>
+.jw-cart {
+  background-color: #0a0a0a;
+  min-height: 60vh;
+  padding: 60px 40px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.jw-cart__title {
+  color: #ffffff;
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.jw-cart__table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.jw-cart__table th {
+  color: #c9a84c;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  text-align: left;
+  padding: 12px 0;
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.jw-cart__table td {
+  padding: 20px 0;
+  border-bottom: 1px solid #1a1a1a;
+  vertical-align: middle;
+}
+
+.jw-cart__item-image {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border: 1px solid #2a2a2a;
+}
+
+.jw-cart__item-title {
+  color: #ffffff;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.jw-cart__item-title:hover {
+  color: #c9a84c;
+}
+
+.jw-cart__item-remove {
+  display: inline-block;
+  margin-top: 8px;
+  color: #666666;
+  font-size: 11px;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.jw-cart__item-remove:hover {
+  color: #ff4444;
+}
+
+.jw-cart__item-price {
+  color: #c9a84c;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.jw-cart__quantity {
+  width: 60px;
+  background: #111111;
+  border: 1px solid #2a2a2a;
+  color: #ffffff;
+  padding: 8px;
+  font-size: 13px;
+  text-align: center;
+}
+
+.jw-cart__update-btn {
+  background: transparent;
+  border: 1px solid #2a2a2a;
+  color: #999999;
+  padding: 8px 16px;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-left: 8px;
+}
+
+.jw-cart__update-btn:hover {
+  border-color: #c9a84c;
+  color: #c9a84c;
+}
+
+.jw-cart__footer {
+  margin-top: 32px;
+  text-align: right;
+}
+
+.jw-cart__total {
+  color: #ffffff;
+  font-size: 18px;
+  letter-spacing: 0.1em;
+  margin-bottom: 20px;
+}
+
+.jw-cart__total-amount {
+  color: #c9a84c;
+  font-weight: 600;
+}
+
+.jw-cart__checkout-btn {
+  display: inline-block;
+  padding: 14px 48px;
+  background: transparent;
+  border: 1px solid #c9a84c;
+  color: #c9a84c;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.jw-cart__checkout-btn:hover {
+  background-color: #c9a84c;
+  color: #0a0a0a;
+}
+
+.jw-cart__empty {
+  text-align: center;
+  color: #666666;
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  padding: 60px 0;
+}
+
+.jw-cart__empty a {
+  display: inline-block;
+  margin-top: 24px;
+  border: 1px solid #c9a84c;
+  color: #c9a84c;
+  padding: 12px 32px;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.jw-cart__empty a:hover {
+  background-color: #c9a84c;
+  color: #0a0a0a;
+}
+
+@media (max-width: 768px) {
+  .jw-cart {
+    padding: 40px 20px;
+  }
+  .jw-cart__table th:nth-child(1),
+  .jw-cart__table td:nth-child(1) {
+    display: none;
+  }
+}
+</style>
+
+<div class="jw-cart">
+  <h1 class="jw-cart__title">{{ 'cart.title' | t }}</h1>
+
+  {% if cart.item_count > 0 %}
+    <form action="{{ routes.cart_url }}" method="post">
+      <table class="jw-cart__table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Product</th>
+            <th>Price</th>
+            <th>Quantity</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in cart.items %}
+            <tr>
+              <td>
+                {% if item.image %}
+                  <img
+                    class="jw-cart__item-image"
+                    src="{{ item.image | image_url: width: 160 }}"
+                    alt="{{ item.product.title | escape }}"
+                    width="80"
+                    height="80"
+                    loading="lazy"
+                  >
+                {% endif %}
+              </td>
+              <td>
+                <a href="{{ item.url }}" class="jw-cart__item-title">{{ item.product.title }}</a>
+                <br>
+                <a href="{{ item.url_to_remove }}" class="jw-cart__item-remove">Remove</a>
+              </td>
+              <td>
+                <span class="jw-cart__item-price">{{ item.price | money }}</span>
+              </td>
+              <td>
+                <input type="number" name="updates[]" value="{{ item.quantity }}" min="0" class="jw-cart__quantity">
+                <button type="submit" class="jw-cart__update-btn">Update</button>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <div class="jw-cart__footer">
+        <p class="jw-cart__total">
+          Total: <span class="jw-cart__total-amount">{{ cart.total_price | money }}</span>
+        </p>
+        <button type="submit" name="checkout" class="jw-cart__checkout-btn">Checkout</button>
+      </div>
+    </form>
+  {% else %}
+    <div class="jw-cart__empty">
+      <p>Your cart is currently empty.</p>
+      <a href="{{ routes.all_products_collection_url }}">Continue Shopping</a>
+    </div>
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "name": "Cart",
+  "settings": []
+}
+{% endschema %}

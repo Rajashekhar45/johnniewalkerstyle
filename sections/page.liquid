@@ -1,0 +1,86 @@
+<style>
+.jw-page {
+  background-color: #0a0a0a;
+  min-height: 60vh;
+  padding: 80px 40px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.jw-page__title {
+  color: #ffffff;
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 32px;
+  border-bottom: 1px solid #2a2a2a;
+  padding-bottom: 16px;
+}
+
+.jw-page__content {
+  color: #999999;
+  font-size: 14px;
+  line-height: 1.8;
+  letter-spacing: 0.05em;
+}
+
+.jw-contact-form input,
+.jw-contact-form textarea {
+  width: 100%;
+  background: #111111;
+  border: 1px solid #2a2a2a;
+  color: #ffffff;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  font-size: 13px;
+  letter-spacing: 0.05em;
+  box-sizing: border-box;
+}
+
+.jw-contact-form textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.jw-contact-form button {
+  background: transparent;
+  border: 1px solid #c9a84c;
+  color: #c9a84c;
+  padding: 12px 40px;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.jw-contact-form button:hover {
+  background: #c9a84c;
+  color: #0a0a0a;
+}
+</style>
+
+<div class="jw-page">
+  <h1 class="jw-page__title">{{ page.title }}</h1>
+  <div class="jw-page__content">
+    {{ page.content }}
+  </div>
+
+  {% if page.handle == 'contact' %}
+    <div class="jw-contact-form" style="margin-top:40px;">
+      {% form 'contact' %}
+        <input type="text" name="contact[name]" placeholder="YOUR NAME">
+        <input type="email" name="contact[email]" placeholder="YOUR EMAIL">
+        <textarea name="contact[body]" placeholder="YOUR MESSAGE"></textarea>
+        <button type="submit">Send Message</button>
+      {% endform %}
+    </div>
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "name": "Page",
+  "settings": []
+}
+{% endschema %}

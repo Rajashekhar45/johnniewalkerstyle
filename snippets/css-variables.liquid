@@ -1,0 +1,97 @@
+{% comment %}
+  JW Style High-Fidelity Design Tokens
+  Exact colors and fonts from johnniewalkerstyle.com
+{% endcomment %}
+
+<style>
+  :root {
+    /* Brand Colors */
+    --jw-black: #000000;
+    --jw-gold: #E8AC0D;
+    --jw-white: #FFFFFF;
+    --jw-gray: #D1D1D1;
+    --jw-border: #EEEEEE;
+
+    /* Typography */
+    --font-heading: 'Antonio', sans-serif;
+    --font-body: 'Montserrat', sans-serif;
+    
+    /* Layout Constants */
+    --container-width-boxed: 1440px;
+    --section-spacing: 120px;
+    --section-spacing-mobile: 60px;
+    
+    /* Global Transitions */
+    --transition-fast: all 0.2s ease;
+    --transition-base: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    --transition-slow: all 0.8s cubic-bezier(0.165, 0.84, 0.44, 1);
+  }
+
+  /* Global Reset & Performance Layer */
+  * {
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    overflow-y: scroll; /* Prevents layout flickering when scrollbar appears */
+  }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--jw-white);
+    color: var(--jw-black);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin: 0 0 20px 0;
+    line-height: 1.1;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+    transition: var(--transition-fast);
+  }
+
+  .container-boxed {
+    max-width: var(--container-width-boxed);
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+
+  .container-full {
+    width: 100%;
+    padding: 0 40px;
+  }
+
+  /* Global Reset for Side White Spaces */
+  body { margin: 0; padding: 0; }
+
+  /* Revealed sections on scroll */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: var(--transition-slow);
+  }
+  .reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (max-width: 768px) {
+    .container-boxed { padding: 0 20px; }
+  }
+</style>

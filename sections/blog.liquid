@@ -1,0 +1,124 @@
+<style>
+.jw-blog {
+  background-color: #0a0a0a;
+  min-height: 60vh;
+  padding: 60px 40px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.jw-blog__title {
+  color: #ffffff;
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.jw-blog__post {
+  border-bottom: 1px solid #2a2a2a;
+  padding-bottom: 40px;
+  margin-bottom: 40px;
+}
+
+.jw-blog__post:last-child {
+  border-bottom: none;
+}
+
+.jw-blog__post-image {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  display: block;
+  margin-bottom: 24px;
+  border: 1px solid #2a2a2a;
+}
+
+.jw-blog__post-title {
+  margin-bottom: 8px;
+}
+
+.jw-blog__post-title a {
+  color: #ffffff;
+  font-size: 18px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.jw-blog__post-title a:hover {
+  color: #c9a84c;
+}
+
+.jw-blog__post-meta {
+  color: #666666;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  margin-bottom: 16px;
+}
+
+.jw-blog__post-excerpt {
+  color: #999999;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.jw-blog__pagination {
+  text-align: center;
+  padding-top: 24px;
+}
+
+.jw-blog__pagination a {
+  color: #c9a84c;
+  text-decoration: none;
+  padding: 8px 12px;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+}
+</style>
+
+<div class="jw-blog">
+  <h1 class="jw-blog__title">{{ blog.title }}</h1>
+
+  {% paginate blog.articles by 5 %}
+    {% for article in blog.articles %}
+      <div class="jw-blog__post">
+        {% if article.image %}
+          <a href="{{ article.url }}">
+            <img
+              class="jw-blog__post-image"
+              src="{{ article.image | image_url: width: 900 }}"
+              alt="{{ article.title | escape }}"
+              width="900"
+              height="506"
+              loading="lazy"
+            >
+          </a>
+        {% endif %}
+        <h2 class="jw-blog__post-title">
+          <a href="{{ article.url }}">{{ article.title }}</a>
+        </h2>
+        {% assign date = article.published_at | time_tag: format: 'date' %}
+        <p class="jw-blog__post-meta">{{ 'blog.article_metadata_html' | t: date: date, author: article.author }}</p>
+        {% if article.excerpt != blank %}
+          <p class="jw-blog__post-excerpt">{{ article.excerpt }}</p>
+        {% endif %}
+      </div>
+    {% endfor %}
+
+    {%- if paginate.pages > 1 -%}
+      <div class="jw-blog__pagination">
+        {{- paginate | default_pagination -}}
+      </div>
+    {%- endif -%}
+  {% endpaginate %}
+</div>
+
+{% schema %}
+{
+  "name": "Blog",
+  "settings": []
+}
+{% endschema %}

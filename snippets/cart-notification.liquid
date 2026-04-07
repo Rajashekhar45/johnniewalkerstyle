@@ -1,0 +1,102 @@
+{% comment %}
+  AJAX Cart Notification Toast
+  Hidden by default, shown when an item is added to the cart.
+{% endcomment %}
+
+<div id="CartNotification" class="cart-notification reveal">
+  <div class="cart-notification__inner">
+    <div class="cart-notification__header">
+      <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <h3 class="cart-notification__heading">Item added to cart</h3>
+    </div>
+    <div id="CartNotificationContent" class="cart-notification__content">
+      {% # Content injected via JS %}
+    </div>
+    <div class="cart-notification__footer">
+      <a href="{{ routes.cart_url }}" class="jw-btn jw-btn--gold jw-btn--small">View Cart</a>
+      <button type="button" class="cart-notification__close" id="CartNotificationClose">Continue Shopping</button>
+    </div>
+  </div>
+</div>
+
+<style>
+  .cart-notification {
+    position: fixed;
+    top: 100px;
+    right: 40px;
+    width: 380px;
+    background: var(--jw-dark);
+    border: 1px solid var(--jw-gold);
+    z-index: 2000;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+    padding: 30px;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateX(50px);
+  }
+
+  .cart-notification.active {
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateX(0);
+    opacity: 1;
+  }
+
+  .cart-notification__header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    color: var(--jw-gold);
+  }
+
+  .cart-notification__heading {
+    font-size: 14px;
+    letter-spacing: 0.1em;
+    margin: 0;
+    color: var(--jw-white);
+  }
+
+  .cart-notification__content {
+    margin-bottom: 25px;
+    font-size: 13px;
+    color: var(--jw-gray);
+    line-height: 1.6;
+  }
+
+  .cart-notification__footer {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .jw-btn--small {
+    padding: 12px 30px;
+    font-size: 11px;
+    width: 100%;
+    text-align: center;
+  }
+
+  .cart-notification__close {
+    background: none;
+    border: none;
+    color: var(--jw-gray);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+
+  @media (max-width: 480px) {
+    .cart-notification {
+      top: auto;
+      bottom: 0;
+      right: 0;
+      width: 100%;
+      border-right: none;
+      border-left: none;
+      border-bottom: none;
+    }
+  }
+</style>

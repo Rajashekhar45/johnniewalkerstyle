@@ -1,0 +1,142 @@
+<style>
+.jw-collection-page {
+  background-color: #0a0a0a;
+  min-height: 60vh;
+  padding: 60px 40px;
+}
+
+.jw-collection-page__title {
+  color: #ffffff;
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.jw-collection-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.jw-collection-card {
+  background-color: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  overflow: hidden;
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.jw-collection-card:hover {
+  transform: translateY(-4px);
+  border-color: #c9a84c;
+}
+
+.jw-collection-card__image {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  display: block;
+}
+
+.jw-collection-card__info {
+  padding: 16px;
+}
+
+.jw-collection-card__title {
+  color: #ffffff;
+  font-size: 12px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+.jw-collection-card__price {
+  color: #c9a84c;
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.jw-collection-card__btn {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  background: transparent;
+  border: 1px solid #c9a84c;
+  color: #c9a84c;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  box-sizing: border-box;
+}
+
+.jw-collection-card__btn:hover {
+  background-color: #c9a84c;
+  color: #0a0a0a;
+}
+
+.jw-collection-empty {
+  color: #666666;
+  text-align: center;
+  grid-column: 1 / -1;
+  letter-spacing: 0.1em;
+  font-size: 14px;
+  padding: 40px 0;
+}
+</style>
+
+<div class="jw-collection-page">
+  <h1 class="jw-collection-page__title">{{ collection.title }}</h1>
+
+  <div class="jw-collection-grid">
+    {% for product in collection.products %}
+      <div class="jw-collection-card">
+        <a href="{{ product.url }}">
+          {% if product.featured_image %}
+            <img
+              class="jw-collection-card__image"
+              src="{{ product.featured_image | image_url: width: 500, height: 500 }}"
+              alt="{{ product.title | escape }}"
+              width="500"
+              height="500"
+              loading="lazy"
+            >
+          {% else %}
+            <div style="width:100%;aspect-ratio:1/1;background:#2a2a2a;display:flex;align-items:center;justify-content:center;color:#666;font-size:12px;">
+              NO IMAGE
+            </div>
+          {% endif %}
+        </a>
+        <div class="jw-collection-card__info">
+          <h3 class="jw-collection-card__title">{{ product.title }}</h3>
+          <p class="jw-collection-card__price">{{ product.price | money }}</p>
+          {% if product.available %}
+            <form method="post" action="{{ routes.cart_add_url }}">
+              <input type="hidden" name="id" value="{{ product.variants.first.id }}">
+              <button type="submit" class="jw-collection-card__btn">Add to Cart</button>
+            </form>
+          {% else %}
+            <span class="jw-collection-card__btn" style="opacity:0.5;cursor:not-allowed;">Sold Out</span>
+          {% endif %}
+        </div>
+      </div>
+    {% else %}
+      <p class="jw-collection-empty">No products found in this collection.</p>
+    {% endfor %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Collection",
+  "settings": []
+}
+{% endschema %}

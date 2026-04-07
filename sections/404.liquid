@@ -1,0 +1,70 @@
+<style>
+.jw-404 {
+  background-color: #0a0a0a;
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 80px 40px;
+}
+
+.jw-404__code {
+  font-size: clamp(4rem, 10vw, 8rem);
+  color: #c9a84c;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  line-height: 1;
+  margin-bottom: 16px;
+}
+
+.jw-404__title {
+  font-size: clamp(1.2rem, 3vw, 2rem);
+  color: #ffffff;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.jw-404__message {
+  color: #999999;
+  font-size: 14px;
+  letter-spacing: 0.05em;
+  margin-bottom: 40px;
+  max-width: 400px;
+}
+
+.jw-404__btn {
+  display: inline-block;
+  border: 1px solid #c9a84c;
+  color: #c9a84c;
+  padding: 14px 48px;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.jw-404__btn:hover {
+  background-color: #c9a84c;
+  color: #0a0a0a;
+}
+</style>
+
+<div class="jw-404">
+  <p class="jw-404__code">404</p>
+  <h1 class="jw-404__title">{{ '404.title' | t }}</h1>
+  <p class="jw-404__message">{{ '404.not_found' | t }}</p>
+  <a href="{{ routes.all_products_collection_url }}" class="jw-404__btn">
+    {{ '404.back_to_shopping' | t }}
+  </a>
+</div>
+
+{% schema %}
+{
+  "name": "404",
+  "settings": []
+}
+{% endschema %}

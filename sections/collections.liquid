@@ -1,0 +1,104 @@
+<style>
+.jw-collections {
+  background-color: #0a0a0a;
+  min-height: 60vh;
+  padding: 60px 40px;
+}
+
+.jw-collections__title {
+  color: #ffffff;
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.jw-collections__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.jw-collections__card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #2a2a2a;
+  transition: transform 0.3s ease, border-color 0.3s ease;
+  text-decoration: none;
+  display: block;
+}
+
+.jw-collections__card:hover {
+  transform: translateY(-4px);
+  border-color: #c9a84c;
+}
+
+.jw-collections__card-image {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  display: block;
+}
+
+.jw-collections__card-content {
+  background-color: #1a1a1a;
+  padding: 16px;
+}
+
+.jw-collections__card-title {
+  color: #ffffff;
+  font-size: 13px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.jw-collections__card-desc {
+  color: #999999;
+  font-size: 12px;
+  line-height: 1.5;
+}
+</style>
+
+<div class="jw-collections">
+  <h1 class="jw-collections__title">{{ 'collections.title' | t }}</h1>
+
+  <div class="jw-collections__grid">
+    {% for collection in collections %}
+      <a class="jw-collections__card" href="{{ collection.url }}">
+        {% if collection.featured_image %}
+          <img
+            class="jw-collections__card-image"
+            src="{{ collection.featured_image | image_url: width: 600, height: 450 }}"
+            alt="{{ collection.title | escape }}"
+            width="600"
+            height="450"
+            loading="lazy"
+          >
+        {% else %}
+          <div style="width:100%;aspect-ratio:4/3;background:#2a2a2a;display:flex;align-items:center;justify-content:center;color:#666;font-size:12px;">
+            {{ collection.title }}
+          </div>
+        {% endif %}
+
+        <div class="jw-collections__card-content">
+          <p class="jw-collections__card-title">{{ collection.title }}</p>
+          {% if collection.description %}
+            <p class="jw-collections__card-desc">{{ collection.description | strip_html | truncatewords: 15 }}</p>
+          {% endif %}
+        </div>
+      </a>
+    {% endfor %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Collections List",
+  "settings": [],
+  "presets": [{ "name": "Collections List" }]
+}
+{% endschema %}

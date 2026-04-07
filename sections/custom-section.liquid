@@ -1,0 +1,53 @@
+<style>
+  .jw-hero-announcement {
+    background-color: #fcf5df !important;
+    padding: 18px 20px;
+    text-align: center;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .jw-hero-announcement__text {
+    font-family: 'Antonio', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: #000000;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin: 0;
+  }
+
+  @media (max-width: 768px) {
+    .jw-hero-announcement {
+      padding: 12px 15px;
+    }
+    .jw-hero-announcement__text {
+      font-size: 14px;
+    }
+  }
+</style>
+
+<div class="jw-hero-announcement">
+  <p class="jw-hero-announcement__text">
+    {{ section.settings.subheading | default: "SPECIAL PRICE !!! KEEP WALKING COLLECTION" }}
+  </p>
+</div>
+
+{% schema %}
+{
+  "name": "JW Announcement Ribbon",
+  "settings": [
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Announcement Text",
+      "default": "SPECIAL PRICE !!! KEEP WALKING COLLECTION"
+    }
+  ],
+  "presets": [
+    {
+      "name": "JW Announcement Ribbon"
+    }
+  ]
+}
+{% endschema %}

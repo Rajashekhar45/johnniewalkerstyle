@@ -1,0 +1,137 @@
+<section class="jw-hero-minimalist">
+  <div class="container-full hero-inner-minimalist">
+    <div class="hero-content-minimalist reveal">
+      <div class="hero-text-minimalist">
+        <h1 class="hero-heading-minimalist">{{ section.settings.heading | newline_to_br }}</h1>
+        {% if section.settings.button_label != blank %}
+          <div class="hero-cta-minimalist">
+            <a href="{{ section.settings.button_link }}" class="jw-btn-minimalist">
+              {{ section.settings.button_label }}
+            </a>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+    
+    <div class="hero-visual-minimalist reveal">
+      {% if section.settings.main_image != blank %}
+        <img src="{{ section.settings.main_image | image_url: width: 1400 }}" 
+             alt="{{ section.settings.heading | escape }}"
+             class="hero-img-minimalist"
+             width="1400"
+             height="auto">
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<style>
+  .jw-hero-minimalist {
+    position: relative;
+    background-color: #FFFFFF;
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    padding: 100px 0;
+  }
+
+  .hero-inner-minimalist {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-left: 10% !important; /* Push text to the left consistent with screenshot */
+  }
+
+  .hero-content-minimalist {
+    flex: 0 0 50%;
+    z-index: 2;
+  }
+
+  .hero-heading-minimalist {
+    font-family: var(--font-heading);
+    font-size: clamp(4rem, 12vw, 10rem);
+    line-height: 0.85;
+    color: #1A1A1A;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin: 0;
+    letter-spacing: -0.02em;
+  }
+
+  .hero-cta-minimalist {
+    margin-top: 40px;
+  }
+
+  .jw-btn-minimalist {
+    display: inline-block;
+    background-color: #000000;
+    color: #FFFFFF;
+    padding: 18px 50px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    transition: var(--transition-base);
+  }
+
+  .jw-btn-minimalist:hover {
+    background-color: var(--jw-gold);
+    color: #000000;
+  }
+
+  .hero-visual-minimalist {
+    flex: 0 0 50%;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .hero-img-minimalist {
+    max-width: 90%;
+    height: auto;
+    object-fit: contain;
+  }
+
+  @media (max-width: 1024px) {
+    .jw-hero-minimalist { padding: 60px 0; min-height: auto; }
+    .hero-inner-minimalist { flex-direction: column; padding-left: 20px !important; text-align: center; }
+    .hero-content-minimalist { flex: 0 0 100%; margin-bottom: 50px; }
+    .hero-visual-minimalist { flex: 0 0 100%; justify-content: center; }
+    .hero-heading-minimalist { font-size: 5rem; }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "NEW COLLECTION HERO",
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading",
+      "default": "NEW\nCOLLECTION"
+    },
+    {
+      "type": "image_picker",
+      "id": "main_image",
+      "label": "Hero Image"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button Label",
+      "default": "DISCOVER"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "NEW COLLECTION HERO"
+    }
+  ]
+}
+{% endschema %}

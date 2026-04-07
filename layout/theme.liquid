@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+  <head>
+    {% # Design Tokens %}
+    {% render 'css-variables' %}
+
+    {% # Performance Optimization %}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
+
+    {% # Load Antonio and Montserrat %}
+    <link href="https://fonts.googleapis.com/css2?family=Antonio:wght@700&family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    {% # Load Font Awesome %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+      /* Vertical Sidebar - Original JW Graphic Refinement */
+      .jw-vertical-sidebar {
+        position: fixed;
+        top: 50%;
+        right: 0; /* Align to the absolute right edge */
+        transform: translateY(-50%);
+        z-index: 1002;
+        pointer-events: none;
+        display: flex;
+        justify-content: center;
+        width: 60px; /* Width to contain the graphic */
+      }
+      .jw-vertical-sidebar img {
+        width: 100%;
+        height: auto;
+        max-width: 45px;
+        pointer-events: auto;
+        animation: slideInSidebar 1.2s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+        opacity: 0;
+      }
+
+      @keyframes slideInSidebar {
+        from { opacity: 0; transform: translateX(20px); }
+        to { opacity: 1; transform: translateX(0); }
+      }
+
+      /* Yellow Bottom Bar - Full Width Parity */
+      .jw-bottom-bar {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 48px;
+        background-color: var(--jw-gold);
+        z-index: 1001;
+        display: flex;
+        align-items: center;
+        padding: 0 40px;
+        cursor: pointer;
+        transition: var(--transition-base);
+        border-top: 1px solid rgba(0,0,0,0.1);
+      }
+      .jw-bottom-bar:hover { height: 55px; background-color: #000000; color: #FFFFFF; }
+
+      .scroll-top-icon {
+        display: flex;
+        align-items: center;
+        transition: transform 0.3s;
+      }
+      .jw-bottom-bar:hover .scroll-top-icon { transform: translateY(-3px); }
+      .scroll-top-icon svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 3.5; }
+
+      @media (max-width: 1024px) {
+        .jw-vertical-sidebar { right: 15px; gap: 15px; }
+        .sidebar-icon { width: 30px; }
+        .vertical-text { font-size: 11px; }
+        .jw-bottom-bar { padding: 0 20px; height: 38px; }
+      }
+    </style>
+
+    {{ 'critical.css' | asset_url | stylesheet_tag: preload: true }}
+    {% render 'meta-tags' %}
+    {{ content_for_header }}
+  </head>
+
+  <body>
+    {% # High-Branding Vertical Sidebar %}
+    <div class="jw-vertical-sidebar desktop-only reveal-sidebar">
+      <img src="https://www.johnniewalkerstyle.com/frontEnd/template/assets/images/JW-Line-graphic_New.png" alt="Johnnie Walker Branding" width="45" height="600" loading="lazy">
+    </div>
+
+    {% # Bottom Yellow Scroll Bar %}
+    <div class="jw-bottom-bar" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" aria-label="Scroll to Top">
+      <div class="scroll-top-icon">
+        <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg>
+      </div>
+    </div>
+
+    {% sections 'header-group' %}
+
+    <main id="MainContent" class="main-content" role="main" tabindex="-1" style="margin-top: 130px;">
+      {{ content_for_layout }}
+    </main>
+
+    {% sections 'footer-group' %}
+
+    {% # Final Interaction Layer %}
+    <script>
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
+      }, { threshold: 0.1 });
+      document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+    </script>
+  </body>
+</html>

@@ -1,0 +1,202 @@
+<style>
+.jw-article {
+  background-color: #0a0a0a;
+  min-height: 60vh;
+  padding: 60px 40px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.jw-article__image {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  display: block;
+  margin-bottom: 32px;
+  border: 1px solid #2a2a2a;
+}
+
+.jw-article__title {
+  color: #ffffff;
+  font-size: clamp(1.3rem, 3vw, 2rem);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.jw-article__meta {
+  color: #666666;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.jw-article__content {
+  color: #cccccc;
+  font-size: 15px;
+  line-height: 1.8;
+  letter-spacing: 0.02em;
+}
+
+.jw-article__content h2,
+.jw-article__content h3 {
+  margin-top: 32px;
+  margin-bottom: 16px;
+}
+
+.jw-article__content p {
+  margin-bottom: 16px;
+}
+
+.jw-article__content a {
+  color: #c9a84c;
+}
+
+.jw-article__comments-title {
+  color: #ffffff;
+  font-size: 16px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-top: 48px;
+  margin-bottom: 24px;
+  padding-top: 24px;
+  border-top: 1px solid #2a2a2a;
+}
+
+.jw-article__comment {
+  border-bottom: 1px solid #1a1a1a;
+  padding: 16px 0;
+}
+
+.jw-article__comment-author {
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+}
+
+.jw-article__comment-date {
+  color: #666666;
+  font-size: 11px;
+}
+
+.jw-article__comment-body {
+  color: #999999;
+  font-size: 14px;
+  line-height: 1.6;
+  margin-top: 8px;
+}
+
+.jw-article__form label {
+  display: block;
+  color: #999999;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  margin-top: 16px;
+}
+
+.jw-article__form input[type="text"],
+.jw-article__form input[type="email"],
+.jw-article__form textarea {
+  width: 100%;
+  background: #111111;
+  border: 1px solid #2a2a2a;
+  color: #ffffff;
+  padding: 12px 16px;
+  font-size: 13px;
+  box-sizing: border-box;
+}
+
+.jw-article__form textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.jw-article__form input[type="submit"] {
+  margin-top: 20px;
+  background: transparent;
+  border: 1px solid #c9a84c;
+  color: #c9a84c;
+  padding: 12px 40px;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.jw-article__form input[type="submit"]:hover {
+  background: #c9a84c;
+  color: #0a0a0a;
+}
+</style>
+
+<div class="jw-article">
+  {% if article.image %}
+    <img
+      class="jw-article__image"
+      src="{{ article.image | image_url: width: 1200 }}"
+      alt="{{ article.title | escape }}"
+      width="{{ article.image.width }}"
+      height="{{ article.image.height }}"
+      loading="eager"
+    >
+  {% endif %}
+
+  <h1 class="jw-article__title">{{ article.title }}</h1>
+
+  {% assign date = article.published_at | time_tag: format: 'date' %}
+  <p class="jw-article__meta">{{ 'blog.article_metadata_html' | t: date: date, author: article.author }}</p>
+
+  <div class="jw-article__content">{{ article.content }}</div>
+
+  {% if blog.comments_enabled? %}
+    <h2 class="jw-article__comments-title">{{ 'blog.article_comments' | t }}</h2>
+
+    <div id="comments">
+      {% paginate article.comments by 10 %}
+        {% for comment in article.comments %}
+          <div class="jw-article__comment">
+            <span class="jw-article__comment-author">{{ comment.author }}</span>
+            <span class="jw-article__comment-date">{{ comment.created_at | time_tag: format: 'date' }}</span>
+            <p class="jw-article__comment-body">{{ comment.content }}</p>
+          </div>
+        {% endfor %}
+
+        {% if paginate.pages > 1 %}
+          {{ paginate | default_pagination: anchor: 'comments' }}
+        {% endif %}
+      {% endpaginate %}
+    </div>
+
+    <div class="jw-article__form">
+      {% form 'new_comment', article %}
+        <h2 class="jw-article__comments-title">{{ 'blog.comment_form_title' | t }}</h2>
+
+        {{ form.errors | default_errors }}
+
+        <label for="author">{{ 'blog.comment_form_name' | t }}</label>
+        <input type="text" name="comment[author]" id="author" value="{{ form.author }}" required>
+
+        <label for="email">{{ 'blog.comment_form_email' | t }}</label>
+        <input type="email" name="comment[email]" id="email" value="{{ form.email }}" required>
+
+        <label for="body">{{ 'blog.comment_form_body' | t }}</label>
+        <textarea name="comment[body]" id="body" required>{{ form.body }}</textarea>
+
+        <input type="submit" value="{{ 'blog.comment_form_submit' | t }}">
+      {% endform %}
+    </div>
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "name": "Article",
+  "settings": []
+}
+{% endschema %}

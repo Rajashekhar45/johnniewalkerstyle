@@ -1,0 +1,196 @@
+<style>
+.jw-search {
+  background-color: #0a0a0a;
+  min-height: 60vh;
+  padding: 60px 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.jw-search__title {
+  color: #ffffff;
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.jw-search__form {
+  display: flex;
+  gap: 0;
+  max-width: 600px;
+  margin: 0 auto 48px auto;
+}
+
+.jw-search__input {
+  flex: 1;
+  background: #111111;
+  border: 1px solid #2a2a2a;
+  border-right: none;
+  color: #ffffff;
+  padding: 14px 20px;
+  font-size: 14px;
+  letter-spacing: 0.05em;
+}
+
+.jw-search__input::placeholder {
+  color: #666666;
+}
+
+.jw-search__submit {
+  background: transparent;
+  border: 1px solid #c9a84c;
+  color: #c9a84c;
+  padding: 14px 32px;
+  font-size: 12px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.jw-search__submit:hover {
+  background-color: #c9a84c;
+  color: #0a0a0a;
+}
+
+.jw-search__status {
+  color: #999999;
+  font-size: 13px;
+  letter-spacing: 0.05em;
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.jw-search__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 24px;
+}
+
+.jw-search__result {
+  background-color: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  overflow: hidden;
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.jw-search__result:hover {
+  transform: translateY(-4px);
+  border-color: #c9a84c;
+}
+
+.jw-search__result-image {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  display: block;
+}
+
+.jw-search__result-content {
+  padding: 16px;
+}
+
+.jw-search__result-title {
+  color: #ffffff;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.jw-search__result-title:hover {
+  color: #c9a84c;
+}
+
+.jw-search__result-price {
+  color: #c9a84c;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.jw-search__pagination {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 24px 0;
+}
+
+.jw-search__pagination a {
+  color: #c9a84c;
+  text-decoration: none;
+  padding: 8px 12px;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+}
+
+.jw-search__pagination a:hover {
+  text-decoration: underline;
+}
+</style>
+
+<div class="jw-search">
+  <h1 class="jw-search__title">{{ 'search.title' | t }}</h1>
+
+  <form action="{{ routes.search_url }}" method="get" role="search" class="jw-search__form">
+    <input
+      type="search"
+      name="q"
+      value="{{ search.terms | escape }}"
+      placeholder="{{ 'search.placeholder' | t }}"
+      class="jw-search__input"
+    >
+    <button type="submit" class="jw-search__submit">{{ 'search.submit' | t }}</button>
+  </form>
+
+  {% if search.performed %}
+    {% if search.results_count == 0 %}
+      <p class="jw-search__status">{{ 'search.no_results_html' | t: terms: search.terms }}</p>
+    {% else %}
+      <p class="jw-search__status">{{ 'search.results_for_html' | t: terms: search.terms, count: search.results_count }}</p>
+
+      <div class="jw-search__grid">
+        {% paginate search.results by 20 %}
+          {% for result in search.results %}
+            <div class="jw-search__result">
+              {% assign featured_image = result.featured_image | default: result.image %}
+              {% if featured_image %}
+                <a href="{{ result.url }}">
+                  <img
+                    class="jw-search__result-image"
+                    src="{{ featured_image | image_url: width: 400 }}"
+                    alt="{{ result.title | escape }}"
+                    width="400"
+                    height="400"
+                    loading="lazy"
+                  >
+                </a>
+              {% endif %}
+              <div class="jw-search__result-content">
+                <a href="{{ result.url }}" class="jw-search__result-title">{{ result.title }}</a>
+                {% if result.price %}
+                  <span class="jw-search__result-price">{{ result.price | money }}</span>
+                {% endif %}
+              </div>
+            </div>
+          {% endfor %}
+
+          {% if paginate.pages > 1 %}
+            <div class="jw-search__pagination">
+              {{ paginate | default_pagination }}
+            </div>
+          {% endif %}
+        {% endpaginate %}
+      </div>
+    {% endif %}
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "name": "Search",
+  "settings": []
+}
+{% endschema %}

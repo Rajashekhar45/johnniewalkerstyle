@@ -1,0 +1,180 @@
+<footer class="jw-footer-refined reveal">
+  <div class="footer-main-black">
+    <div class="container-boxed">
+      <div class="footer-hero-wrap-refined">
+        <h2 class="footer-hashtag-refined">#JOHNNIEWALKERSTYLE</h2>
+        <div class="footer-cta-box-refined">
+          <a href="{{ section.settings.shop_btn_link | default: '/collections/all' }}" class="footer-btn-framed-refined">
+            {{ section.settings.shop_btn_label | default: 'SHOP NOW' }}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-legal-gold-refined">
+    <div class="container-boxed">
+      <div class="legal-bar-content-refined">
+        <div class="legal-links-refined">
+          {% for link in section.settings.legal_menu.links %}
+            <a href="{{ link.url }}">{{ link.title }}</a>
+            {% unless forloop.last %}<span class="divider">|</span>{% endunless %}
+          {% endfor %}
+          {% if section.settings.legal_menu == blank %}
+             <a href="/contact">CONTACT US</a> <span class="divider">|</span>
+             <a href="/policies/privacy-policy">PRIVACY POLICY</a> <span class="divider">|</span>
+             <a href="/policies/terms-of-service">TERMS & CONDITIONS</a> <span class="divider">|</span>
+             <a href="/policies/refund-policy">COOKIE POLICY</a>
+          {% endif %}
+        </div>
+        <div class="legal-info-wrap-refined">
+          <p class="copyright-text">COPYRIGHT © {{ 'now' | date: "%Y" }} DIAGEO</p>
+          <p class="age-warning-text">PLEASE DO NOT SHARE WITH ANYONE UNDER THE LEGAL PURCHASE AGE.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .jw-footer-refined {
+    width: 100%;
+    margin-top: auto;
+  }
+
+  /* Main Black Footer Layer */
+  .footer-main-black {
+    background-color: var(--jw-black);
+    color: var(--jw-white);
+    padding: 120px 0 140px 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .footer-hero-wrap-refined {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* High-Fidelity Hashtag Visibility */
+  .footer-hashtag-refined {
+    font-family: var(--font-heading);
+    font-size: clamp(3.5rem, 15vw, 15rem); /* Increased size */
+    line-height: 0.75;
+    color: #FFFFFF; /* High visibility white */
+    opacity: 0.12; /* Subtle but clear presence */
+    font-weight: 700;
+    margin: 0 0 -50px 0;
+    letter-spacing: -0.04em;
+    pointer-events: none;
+    text-transform: uppercase;
+  }
+
+  .footer-cta-box-refined {
+    position: relative;
+    z-index: 2;
+  }
+
+  .footer-btn-framed-refined {
+    display: inline-block;
+    padding: 24px 70px;
+    border: 2px solid #FFFFFF; /* Thicker border for premium look */
+    color: #FFFFFF;
+    font-family: var(--font-heading);
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    transition: var(--transition-base);
+    background: transparent;
+  }
+
+  .footer-btn-framed-refined:hover {
+    background-color: #FFFFFF;
+    color: #000000;
+    transform: translateY(-5px);
+  }
+
+  /* High-Contrast Gold Bottom Bar */
+  .footer-legal-gold-refined {
+    background-color: var(--jw-gold);
+    color: #000000;
+    padding: 35px 0;
+  }
+
+  .legal-bar-content-refined {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    text-align: center;
+  }
+
+  .legal-links-refined {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+
+  .legal-links-refined a { color: #000000; transition: opacity 0.2s; }
+  .legal-links-refined a:hover { opacity: 0.6; }
+  .divider { opacity: 0.3; }
+
+  .legal-info-wrap-refined {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .copyright-text, .age-warning-text {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    margin: 0;
+    opacity: 0.9;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 768px) {
+    .footer-main-black { padding: 100px 0; }
+    .footer-hashtag-refined { font-size: 4.5rem; margin-bottom: 20px; opacity: 0.15; }
+    .footer-btn-framed-refined { padding: 18px 45px; font-size: 14px; }
+    .legal-links-refined { flex-direction: column; gap: 8px; }
+    .divider { display: none; }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "JW Footer Refined",
+  "settings": [
+    {
+      "type": "text",
+      "id": "shop_btn_label",
+      "label": "Button Label",
+      "default": "SHOP NOW"
+    },
+    {
+      "type": "url",
+      "id": "shop_btn_link",
+      "label": "Button Link"
+    },
+    {
+      "type": "link_list",
+      "id": "legal_menu",
+      "label": "Legal Links Menu"
+    }
+  ],
+  "presets": [
+    {
+      "name": "JW Footer Refined"
+    }
+  ]
+}
+{% endschema %}

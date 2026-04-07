@@ -1,0 +1,112 @@
+<style>
+.jw-footer {
+  background-color: #000000;
+  border-top: 1px solid #2a2a2a;
+  padding: 24px 40px;
+  text-align: center;
+}
+
+.jw-footer__links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 4px;
+  margin-bottom: 16px;
+}
+
+.jw-footer__links a {
+  color: #999999;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.jw-footer__links a:hover {
+  color: #c9a84c;
+}
+
+.jw-footer__links span {
+  color: #444;
+  font-size: 11px;
+}
+
+.jw-footer__copyright {
+  color: #666666;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  margin-top: 12px;
+}
+
+.jw-footer__disclaimer {
+  color: #555555;
+  font-size: 10px;
+  margin-top: 8px;
+  letter-spacing: 0.03em;
+}
+</style>
+
+<footer class="jw-footer">
+  <div class="jw-footer__links">
+    {% for link in section.settings.menu.links %}
+      <a href="{{ link.url }}">{{ link.title }}</a>
+      {% unless forloop.last %}
+        <span>|</span>
+      {% endunless %}
+    {% endfor %}
+
+    {% if section.settings.menu.links.size == 0 %}
+      <a href="/pages/terms">Conditions of Use</a>
+      <span>|</span>
+      <a href="/pages/privacy">Privacy and Cookie Notice</a>
+      <span>|</span>
+      <a href="https://www.diageoprivacycentre.com">Diageo Privacy Centre</a>
+      <span>|</span>
+      <a href="http://www.drinkiq.com">DrinkIQ</a>
+      <span>|</span>
+      <a href="http://www.responsibledrinking.org">Responsible Drinking</a>
+    {% endif %}
+  </div>
+
+  <p class="jw-footer__copyright">
+    {{ section.settings.copyright | default: 'COPYRIGHT' }} &copy; {{ 'now' | date: '%Y' }} {{ section.settings.company_name | default: 'Diageo' }}
+  </p>
+
+  {% if section.settings.disclaimer != blank %}
+    <p class="jw-footer__disclaimer">
+      {{ section.settings.disclaimer }}
+    </p>
+  {% endif %}
+</footer>
+
+{% schema %}
+{
+  "name": "JW Footer",
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Footer Menu",
+      "info": "Select a menu to display footer links. If empty, default Diageo links are shown."
+    },
+    {
+      "type": "text",
+      "id": "copyright",
+      "label": "Copyright Text",
+      "default": "COPYRIGHT"
+    },
+    {
+      "type": "text",
+      "id": "company_name",
+      "label": "Company Name",
+      "default": "Diageo"
+    },
+    {
+      "type": "textarea",
+      "id": "disclaimer",
+      "label": "Disclaimer Text",
+      "default": "Please do not share with anyone under the legal purchase age for alcohol. Drink responsibly."
+    }
+  ]
+}
+{% endschema %}

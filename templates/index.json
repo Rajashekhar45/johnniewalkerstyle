@@ -1,0 +1,23 @@
+{
+  "sections": {
+    "hero": {
+      "type": "jw-hero",
+      "settings": {
+        "heading": "NEW\nCOLLECTION",
+        "button_label": "EXPLORE NOW",
+        "button_link": "/collections/all"
+      }
+    },
+    "products": {
+      "type": "jw-product-grid",
+      "settings": {
+        "heading": "SELECTED STYLE",
+        "products_count": 3
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "products"
+  ]
+}
