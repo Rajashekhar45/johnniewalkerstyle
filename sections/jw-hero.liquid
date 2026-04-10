@@ -19,7 +19,7 @@
              alt="{{ section.settings.heading | escape }}"
              class="hero-img-minimalist"
              width="1400"
-             height="auto">
+             height="{{ 1400 | divided_by: section.settings.main_image.aspect_ratio | round }}">
       {% endif %}
     </div>
   </div>

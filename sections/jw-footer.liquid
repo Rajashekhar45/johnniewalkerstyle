@@ -1,10 +1,14 @@
-<footer class="jw-footer-refined reveal">
-  <div class="footer-main-black">
-    <div class="container-boxed">
-      <div class="footer-hero-wrap-refined">
-        <h2 class="footer-hashtag-refined">#JOHNNIEWALKERSTYLE</h2>
-        <div class="footer-cta-box-refined">
-          <a href="{{ section.settings.shop_btn_link | default: '/collections/all' }}" class="footer-btn-framed-refined">
+<footer class="jw-footer-high-fidelity reveal">
+  <!-- Top Gold Bar Accent -->
+  <div class="footer-top-accent"></div>
+
+  <!-- Main Black Body -->
+  <div class="footer-mid-black">
+    <div class="container-full">
+      <div class="footer-hashtags-wrap">
+        <h2 class="footer-hashtag-text">#JOHNNIEWALKERSTYLE</h2>
+        <div class="footer-shop-btn-wrap">
+          <a href="{{ section.settings.shop_btn_link | default: routes.all_products_collection_url }}" class="footer-shop-btn">
             {{ section.settings.shop_btn_label | default: 'SHOP NOW' }}
           </a>
         </div>
@@ -12,147 +16,158 @@
     </div>
   </div>
 
-  <div class="footer-legal-gold-refined">
-    <div class="container-boxed">
-      <div class="legal-bar-content-refined">
-        <div class="legal-links-refined">
+  <!-- Triple-Row Gold Bottom Bar -->
+  <div class="footer-bottom-gold">
+    <div class="container-full footer-bottom-inner">
+      
+      
+      <div class="footer-legal-content">
+        <!-- Row 1: Legal Links -->
+        <div class="footer-legal-links">
           {% for link in section.settings.legal_menu.links %}
             <a href="{{ link.url }}">{{ link.title }}</a>
-            {% unless forloop.last %}<span class="divider">|</span>{% endunless %}
+            {% unless forloop.last %}<span class="footer-pipe">|</span>{% endunless %}
+          {% else %}
+            <!-- Matching image defaults -->
+            <a href="#">Conditions of Use</a> <span class="footer-pipe">|</span>
+            <a href="#">Privacy and Cookie Notice</a> <span class="footer-pipe">|</span>
+            <a href="#">UGC Policy</a> <span class="footer-pipe">|</span>
+            <a href="#">Accessibility</a> <span class="footer-pipe">|</span>
+            <a href="#">Privacy Settings</a> <span class="footer-pipe">|</span>
+            <a href="#">Diageo Privacy Centre</a> <span class="footer-pipe">|</span>
+            <a href="#">DrinkIQ</a> <span class="footer-pipe">|</span>
+            <a href="#">theBar.com</a> <span class="footer-pipe">|</span>
+            <a href="#">Responsible Drinking</a>
           {% endfor %}
-          {% if section.settings.legal_menu == blank %}
-             <a href="/contact">CONTACT US</a> <span class="divider">|</span>
-             <a href="/policies/privacy-policy">PRIVACY POLICY</a> <span class="divider">|</span>
-             <a href="/policies/terms-of-service">TERMS & CONDITIONS</a> <span class="divider">|</span>
-             <a href="/policies/refund-policy">COOKIE POLICY</a>
-          {% endif %}
         </div>
-        <div class="legal-info-wrap-refined">
-          <p class="copyright-text">COPYRIGHT © {{ 'now' | date: "%Y" }} DIAGEO</p>
-          <p class="age-warning-text">PLEASE DO NOT SHARE WITH ANYONE UNDER THE LEGAL PURCHASE AGE.</p>
+
+        <!-- Row 2: Copyright -->
+        <div class="footer-copyright">
+          COPYRIGHT © {{ 'now' | date: "%Y" }} DIAGEO
+        </div>
+
+        <!-- Row 3: Age Disclaimer -->
+        <div class="footer-age-disclaimer">
+          Please do not share with anyone under the legal purchase age for alcohol. Drink responsibly.
         </div>
       </div>
+
     </div>
   </div>
 </footer>
 
 <style>
-  .jw-footer-refined {
+  .jw-footer-high-fidelity {
     width: 100%;
-    margin-top: auto;
+    position: relative;
+    z-index: 10;
   }
 
-  /* Main Black Footer Layer */
-  .footer-main-black {
-    background-color: var(--jw-black);
-    color: var(--jw-white);
-    padding: 120px 0 140px 0;
+  .footer-top-accent {
+    padding-top: 15px;
+    padding-bottom: 15px;
+    background-color: var(--jw-gold);
+    width: 100%;
+  }
+
+  .footer-mid-black {
+    background-color: #000000;
+    padding: 100px 0;
     text-align: center;
-    position: relative;
-    overflow: hidden;
   }
 
-  .footer-hero-wrap-refined {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-
-  /* High-Fidelity Hashtag Visibility */
-  .footer-hashtag-refined {
+  .footer-hashtag-text {
     font-family: var(--font-heading);
-    font-size: clamp(3.5rem, 15vw, 15rem); /* Increased size */
-    line-height: 0.75;
-    color: #FFFFFF; /* High visibility white */
-    opacity: 0.12; /* Subtle but clear presence */
-    font-weight: 700;
-    margin: 0 0 -50px 0;
-    letter-spacing: -0.04em;
-    pointer-events: none;
-    text-transform: uppercase;
-  }
-
-  .footer-cta-box-refined {
-    position: relative;
-    z-index: 2;
-  }
-
-  .footer-btn-framed-refined {
-    display: inline-block;
-    padding: 24px 70px;
-    border: 2px solid #FFFFFF; /* Thicker border for premium look */
+    font-size: 25px; /* High fidelity size */
     color: #FFFFFF;
-    font-family: var(--font-heading);
-    font-size: 16px;
-    font-weight: 700;
-    letter-spacing: 0.3em;
-    transition: var(--transition-base);
-    background: transparent;
+    letter-spacing: 3px;
+    margin: 0 0 10px 0;
+    line-height: 1;
   }
 
-  .footer-btn-framed-refined:hover {
-    background-color: #FFFFFF;
-    color: #000000;
-    transform: translateY(-5px);
+  .footer-shop-btn {
+   
+    
+        margin-top: 10px;
+    font-family: "JohnnieWalkerWeb Headline" !important;
+    font-size: 20px;
+    background-color: transparent;
+    color: #FFF;
+    border: 5px solid #FFF;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
   }
 
-  /* High-Contrast Gold Bottom Bar */
-  .footer-legal-gold-refined {
+  .footer-bottom-gold {
     background-color: var(--jw-gold);
     color: #000000;
-    padding: 35px 0;
+    padding: 15px 0;
   }
 
-  .legal-bar-content-refined {
+  .footer-bottom-inner {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 20px;
+  }
+
+  .footer-legal-content {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20px;
+    gap: 15px;
+    max-width: 1100px;
     text-align: center;
   }
 
-  .legal-links-refined {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 12px;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
+  .footer-legal-links {
+    font-size: 12px;
+    letter-spacing: .9px;
+    line-height: 1.6;
+  }
+  .footer-legal-links a {
+    color: #000000;
+    text-decoration: none;
+  }
+  .footer-legal-links a:hover {
+    color: #2D2926;
+  }
+  .footer-pipe {
+    margin: 0 4px;
+    
+    opacity: 0.6;
   }
 
-  .legal-links-refined a { color: #000000; transition: opacity 0.2s; }
-  .legal-links-refined a:hover { opacity: 0.6; }
-  .divider { opacity: 0.3; }
-
-  .legal-info-wrap-refined {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  .copyright-text, .age-warning-text {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    margin: 0;
-    opacity: 0.9;
+  .footer-copyright {
+    color: #000;
+    font-size: 13px;
     text-transform: uppercase;
+    letter-spacing: .9px;
+  }
+
+  .footer-age-disclaimer {
+    font-size: 15px;
+    text-align: center;
+    letter-spacing: .9px;
+    font-family: "Poppins", sans-serif;
   }
 
   @media (max-width: 768px) {
-    .footer-main-black { padding: 100px 0; }
-    .footer-hashtag-refined { font-size: 4.5rem; margin-bottom: 20px; opacity: 0.15; }
-    .footer-btn-framed-refined { padding: 18px 45px; font-size: 14px; }
-    .legal-links-refined { flex-direction: column; gap: 8px; }
-    .divider { display: none; }
+    .footer-hashtag-text { font-size: 32px; }
+    .footer-scroll-top { position: static; margin-bottom: 20px; }
+    .footer-bottom-inner { flex-direction: column; }
+    .footer-legal-links { font-size: 10px; }
+    .footer-pipe { display: none; }
+    .footer-legal-links a { display: block; margin-bottom: 5px; }
   }
 </style>
 
-{% schema %}
+{% schema %} 
 {
-  "name": "JW Footer Refined",
+  "name": "JW Footer High-Fidelity",
   "settings": [
     {
       "type": "text",
@@ -173,8 +188,11 @@
   ],
   "presets": [
     {
-      "name": "JW Footer Refined"
+      "name": "JW Footer High-Fidelity"
     }
   ]
 }
 {% endschema %}
+
+{% javascript %}
+{% endjavascript %}

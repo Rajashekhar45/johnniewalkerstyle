@@ -1,0 +1,448 @@
+<section class="jw-split-section">
+  <!-- Diagonal Yellow Background -->
+  <div class="jw-split-bg"></div>
+
+  <div class="container-full">
+    <div class="jw-split-content jw-dynamic-layout">
+      
+        <!-- Left Sidebar: Sticky "NEW COLLECTION" -->
+        <div class="jw-split-sidebar-left">
+          <div class="jw-sticky-branding-left">
+            <h2 class="title-text">NEW<br>COLLECTION</h2>
+          </div>
+        </div>
+        
+        <!-- Dynamic Product Grid Wrapper -->
+        <div class="jw-split-grid-wrapper">
+          <div class="jw-split-grid">
+          {% assign collection = collections[section.settings.collection] %}
+          {% for product in collection.products %}
+            <div class="jw-split-product-card">
+              <div class="product-image-container">
+                <a href="{{ product.url }}" class="product-link">
+                  <!-- Badges -->
+                  <div class="product-badges">
+                    {% if product.available == false %}
+                      <span class="badge badge--sold-out">SOLD OUT</span>
+                    {% elsif product.tags contains 'new' %}
+                      <span class="badge badge--new">NEW</span>
+                    {% endif %}
+                  </div>
+
+                  <!-- Primary Image -->
+                  {% if product.featured_media %}
+                    <img src="{{ product.featured_media | image_url: width: 600 }}" alt="{{ product.title | escape }}" loading="lazy" 
+                    width="600" height="800" class="split-product-img primary">
+                  {% else %}
+                    {{ 'product-1' | placeholder_svg_tag: 'split-product-img primary' }}
+                  {% endif %}
+
+                  <!-- Secondary Image (Cross-fade) -->
+                  {% if product.media.size > 1 %}
+                    <img src="{{ product.media[1] | image_url: width: 600 }}" alt="{{ product.title | escape }}" loading="lazy" width="600" height="800" class="split-product-img secondary">
+                  {% endif %}
+                </a>
+                
+                <!-- Quick Add to Cart Button -->
+                {% if product.available %}
+                  <form action="{{ routes.cart_add_url }}" method="post" enctype="multipart/form-data" class="quick-add-form">
+                    <input type="hidden" name="id" value="{{ product.variants.first.id }}">
+                    <button type="submit" class="btn-add-to-cart">
+                      <i class="fas fa-shopping-cart"></i>
+                      <span>Add To Cart</span>
+                    </button>
+                  </form>
+                {% endif %}
+              </div>
+
+              <div class="split-product-info">
+                <h3 class="split-product-title"><a href="{{ product.url }}">{{ product.title }}</a></h3>
+                {% comment %} {% if product.vendor != blank %}
+                  <p class="split-product-subtitle">{{ product.vendor }}</p>
+                {% endif %} {% endcomment %}
+                <p class="split-product-price"><span class="currency">฿</span>{{ product.price | money_without_currency }}</p>
+              </div>
+            </div>
+          {% else %}
+            <!-- Show placeholder if empty -->
+            {% for i in (1..4) %}
+              <div class="jw-split-product-card">
+                 <div class="product-image-container">
+                   <div class="product-link">
+                     {{ 'product-' | append: i | placeholder_svg_tag: 'split-product-img' }}
+                   </div>
+                   <button class="btn-add-to-cart">
+                      <i class="fas fa-shopping-cart"></i>
+                      <span>Add To Cart</span>
+                   </button>
+                 </div>
+                 <div class="split-product-info">
+                   <h3 class="split-product-title">Example Product</h3>
+                   <p class="split-product-price">$99.00</p>
+                 </div>
+              </div>
+            {% endfor %}
+          {% endfor %}
+          </div>
+        </div>
+
+        <!-- Right Sidebar: Sticky Branding Stack -->
+        <div class="jw-split-sidebar-right">
+          <div class="jw-sticky-branding-right">
+             <div class="branding-stack">
+               <img src="https://www.johnniewalkerstyle.com/frontEnd/template/assets/images/JW-Line-graphic_New.png" alt="Johnnie Walker Branding" class="branding-line-graphic" width="100" height="580">
+             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  <!-- Removing old decorative element as it is now in the sticky sidebar -->
+</section>
+
+<style>
+  .jw-split-section {
+    position: relative;
+    background-color: #FFFFFF;
+    padding: 10px 0;
+    overflow: hidden;
+  }
+
+  /* The Diagonal Divide */
+  .jw-split-bg {
+    position: absolute;
+    top: 0; 
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Exact 50/50 split matching main website (Orange Top, White Bottom) */
+    background: linear-gradient(168deg, #F8B400 50%, #FFFFFF 50%);
+    z-index: 0;
+  }
+
+  .jw-split-content {
+    position: relative;
+    z-index: 10;
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+
+  .jw-dynamic-layout {
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+  }
+
+  /* Left Sidebar Styling (High-Fidelity col-md-3) */
+  .jw-split-sidebar-left {
+    width: 25%; /* Exactly matching col-md-3 */
+    min-width: 200px;
+    position: relative;
+    padding: 60px 0; /* Matching user screenshot pt-60 pb-60 */
+  }
+
+  .jw-sticky-branding-left {
+    position: sticky;
+    bottom: 5%; /* Anchors at the bottom as specified */
+    text-align: center; /* Matching text-center from inspector */
+    padding: 60px 0;
+  }
+
+  .jw-sticky-branding-left .title-text {
+    font-family: 'Antonio', sans-serif;
+    font-size: 42px; /* Large premium size */
+    font-weight: 800;
+    color: #000000;
+    letter-spacing: 0.1em;
+    line-height: 0.9;
+    margin: 0;
+    text-transform: uppercase;
+  }
+
+  .jw-split-grid-wrapper {
+    flex: 1; /* Takes remaining space beside sidebars */
+    padding: 40px 0;
+  }
+
+  .jw-split-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 products wide */
+    gap: 30px;
+  }
+
+  /* Right Sidebar Branding Styling */
+  .jw-split-sidebar-right {
+    width: 100px;
+    flex-shrink: 0;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+
+  .jw-sticky-branding-right {
+    position: sticky;
+    bottom: 5%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 30px;
+  }
+
+  .branding-line-graphic {
+    width: 45px;
+    height: auto;
+    object-fit: contain;
+  }
+
+  /* Product Card Styling */
+  .jw-split-product-card {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    background: transparent;
+  }
+
+  .product-image-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 3 / 4; /* Matching reference site: 600x800px intrinsic */
+    background-color: #f7f7f7;
+    margin-bottom: 25px;
+    overflow: hidden;
+  }
+
+  .product-link {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .split-product-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* ensures whole product is visible */
+    transition: transform 0.6s ease, opacity 0.6s ease;
+  }
+
+  .split-product-img.secondary {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    z-index: 2;
+  }
+
+  .jw-split-product-card:hover .split-product-img.primary {
+    opacity: 0;
+  }
+
+  .jw-split-product-card:hover .split-product-img.secondary {
+    opacity: 1;
+  }
+
+  /* No zoom for fallback */
+  .jw-split-product-card:hover .split-product-img.primary:not(.secondary) {
+     opacity: 1;
+  }
+
+  /* Handle case where NO secondary image exists */
+  .jw-split-product-card:hover .split-product-img:only-of-type {
+    opacity: 1;
+  }
+
+  /* Badges Styling */
+  .product-badges {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    z-index: 10;
+    pointer-events: none;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 6px 12px;
+    font-family: 'Antonio', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border-radius: 2px;
+  }
+
+  .badge--sold-out {
+    background-color: #000000;
+    color: #FFFFFF;
+  }
+
+  .badge--new {
+    background-color: #F8B400;
+    color: #000000;
+  }
+
+  /* Add to Cart Hover Button (Full Width Bar Parity) */
+  .btn-add-to-cart {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 15px 10px;
+    background: #F8B400; /* Orange Hover on Image */
+    color: #FFFFFF;
+    border: none;
+    border-radius: 0; /* Full Width Bar */
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    cursor: pointer;
+    transform: translateY(100%);
+    transition: all 0.35s cubic-bezier(0.165, 0.84, 0.44, 1);
+    z-index: 5;
+    opacity: 0;
+  }
+
+  .btn-add-to-cart i {
+    font-size: 15px;
+  }
+
+  .jw-split-product-card:hover .btn-add-to-cart {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  /* Button turns black when directly hovered */
+  .btn-add-to-cart:hover {
+    background: #000000 !important;
+  }
+
+  .split-product-info {
+    padding: 0 10px;
+  }
+
+  .split-product-title, .split-product-title a {
+    font-family: 'Antonio', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: #000000;
+    text-transform: uppercase;
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    margin: 0 0 8px 0;
+    line-height: 1.2;
+  }
+
+  .split-product-subtitle {
+    font-size: 11px;
+    font-weight: 700;
+    color: #1a1a1a;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin: 0 0 10px 0;
+  }
+
+  .split-product-price {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    font-weight: 800;
+    color: #000000;
+    letter-spacing: 0.02em;
+    margin: 0;
+  }
+
+  .split-product-price .currency {
+    margin-right: 2px;
+  }
+
+  /* Right Side sticky Decor Elements */
+  .jw-split-decor {
+    position: absolute;
+    right: 30px;
+    bottom: 20%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    z-index: 10;
+  }
+
+  .decor-text {
+    writing-mode: vertical-rl;
+    border: 2px solid #000;
+    padding: 15px 5px;
+    font-family: 'Antonio', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 0.1em;
+    color: #000;
+  }
+
+  /* Old Website Branding Positioning */
+  .logo200YEARSOnWhiteKeepWalking {
+    position: absolute;
+    z-index: 1;
+    opacity: 1;
+  }
+  .logo200YEARSOnWhiteKeepWalking.bottom {
+    bottom: 60px;
+  }
+  .logo200YEARSOnWhiteKeepWalking.right {
+    right: 60px;
+  }
+
+  /* Mobile Adjustments */
+  @media (max-width: 1024px) {
+    .jw-split-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .jw-dynamic-layout {
+      flex-direction: column;
+      align-items: center;
+      gap: 30px;
+    }
+    .jw-split-title {
+      width: 100%;
+      padding-top: 0;
+      position: static;
+    }
+    .jw-split-bg {
+      background: linear-gradient(168deg, #F8B400 40%, #FFFFFF 40%);
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "JW Split Collection",
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "left_heading",
+      "label": "Left Vertical Heading",
+      "default": "NEW\nCOLLECTION",
+      "info": "Use a newline (Enter) to break the words like in the design."
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Select Collection"
+    }
+  ],
+  "presets": [
+    {
+      "name": "JW Split Collection",
+      "category": "Collection"
+    }
+  ]
+}
+{% endschema %}

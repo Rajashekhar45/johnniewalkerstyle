@@ -9,7 +9,7 @@
 
   .jw-hero-announcement__text {
     font-family: 'Antonio', sans-serif;
-    font-size: 16px;
+    font-size: 25px;
     font-weight: 700;
     color: #000000;
     letter-spacing: 0.05em;
@@ -26,10 +26,11 @@
     }
   }
 </style>
+  <!-- Announcement Bar (Always shown per user request) -->
 
 <div class="jw-hero-announcement">
   <p class="jw-hero-announcement__text">
-    {{ section.settings.subheading | default: "SPECIAL PRICE !!! KEEP WALKING COLLECTION" }}
+    {{ section.settings.subheading }}
   </p>
 </div>
 

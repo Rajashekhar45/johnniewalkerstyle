@@ -16,6 +16,25 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
+      /* Global Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #FDF9F1; /* Soft cream color matching the image */
+        box-shadow: inset 1px 0 0 rgba(0, 0, 0, 0.05); /* Subtle inner line */
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #F8B400; 
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #e3a60f; 
+      }
+      body::-webkit-scrollbar {
+        display: none; /* Prevents double scrolling issue */
+      }
+
       /* Vertical Sidebar - Original JW Graphic Refinement */
       .jw-vertical-sidebar {
         position: fixed;
@@ -42,37 +61,55 @@
         to { opacity: 1; transform: translateX(0); }
       }
 
-      /* Yellow Bottom Bar - Full Width Parity */
-      .jw-bottom-bar {
+      /* High-Fidelity Floating Scroll-to-Top Button */
+      #scrollUp {
         position: fixed;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 48px;
-        background-color: var(--jw-gold);
-        z-index: 1001;
-        display: flex;
-        align-items: center;
-        padding: 0 40px;
+        left: 20px;
+        bottom: 60px;
+        width: 50px;
+        height: 50px;
+        background-color: #ffbc01;
+        color: #fff;
+        text-align: center;
+        border-radius: 50px;
+        z-index: 9811 !important;
+        border: none;
         cursor: pointer;
-        transition: var(--transition-base);
-        border-top: 1px solid rgba(0,0,0,0.1);
-      }
-      .jw-bottom-bar:hover { height: 55px; background-color: #000000; color: #FFFFFF; }
-
-      .scroll-top-icon {
         display: flex;
         align-items: center;
-        transition: transform 0.3s;
+        justify-content: center;
+        font-size: 22px;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        text-decoration: none;
       }
-      .jw-bottom-bar:hover .scroll-top-icon { transform: translateY(-3px); }
-      .scroll-top-icon svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 3.5; }
+
+      #scrollUp.is-visible {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      #scrollUp:hover {
+        background-color: #e6a901;
+      }
+
+      #scrollUp i {
+        animation: jw-chevron-up 2s infinite;
+        display: inline-block;
+        line-height: 50px;
+      }
+
+      @keyframes jw-chevron-up {
+        0% { transform: translateY(10px); opacity: 0; }
+        30% { transform: translateY(0); opacity: 1; }
+        100% { transform: translateY(-15px); opacity: 0; }
+      }
 
       @media (max-width: 1024px) {
         .jw-vertical-sidebar { right: 15px; gap: 15px; }
         .sidebar-icon { width: 30px; }
         .vertical-text { font-size: 11px; }
-        .jw-bottom-bar { padding: 0 20px; height: 38px; }
       }
     </style>
 
@@ -82,21 +119,16 @@
   </head>
 
   <body>
-    {% # High-Branding Vertical Sidebar %}
-    <div class="jw-vertical-sidebar desktop-only reveal-sidebar">
-      <img src="https://www.johnniewalkerstyle.com/frontEnd/template/assets/images/JW-Line-graphic_New.png" alt="Johnnie Walker Branding" width="45" height="600" loading="lazy">
-    </div>
+ 
 
-    {% # Bottom Yellow Scroll Bar %}
-    <div class="jw-bottom-bar" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" aria-label="Scroll to Top">
-      <div class="scroll-top-icon">
-        <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg>
-      </div>
-    </div>
+    <!-- Global High-Fidelity Scroll-to-Top -->
+    <a id="scrollUp" href="javascript:void(0)" aria-label="Scroll to Top">
+      <i class="fa fa-angle-double-up"></i>
+    </a>
 
     {% sections 'header-group' %}
 
-    <main id="MainContent" class="main-content" role="main" tabindex="-1" style="margin-top: 130px;">
+    <main id="MainContent" class="main-content" role="main" tabindex="-1" style="margin-top: 90px;">
       {{ content_for_layout }}
     </main>
 
@@ -108,6 +140,32 @@
         entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
       }, { threshold: 0.1 });
       document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+      // Global Scroll to Top Logic
+      const scrollBtn = document.getElementById('scrollUp');
+      
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 300) {
+          scrollBtn.classList.add('is-visible');
+        } else {
+          scrollBtn.classList.remove('is-visible');
+        }
+      });
+
+      scrollBtn.addEventListener('click', () => {
+        const duration = 1200;
+        const start = window.pageYOffset;
+        const startTime = performance.now();
+
+        function scroll() {
+          const now = performance.now();
+          const time = Math.min(1, (now - startTime) / duration);
+          const easedTime = time * time; // Ease-In
+          window.scroll(0, Math.ceil((1 - easedTime) * start));
+          if (window.pageYOffset > 0) requestAnimationFrame(scroll);
+        }
+        scroll();
+      });
     </script>
   </body>
 </html>
