@@ -1,23 +1,32 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
-    "hero": {
-      "type": "jw-hero",
+    "custom_section_nET7CE": {
+      "type": "custom-section",
+      "name": "JW Announcement Ribbon",
       "settings": {
-        "heading": "NEW\nCOLLECTION",
-        "button_label": "EXPLORE NOW",
-        "button_link": "/collections/all"
+        "subheading": "SPECIAL PRICE !!! KEEP WALKING COLLECTION"
       }
     },
-    "products": {
-      "type": "jw-product-grid",
+    "jw_split_collection_xCjtXg": {
+      "type": "jw-split-collection",
+      "name": "JW Split Collection",
       "settings": {
-        "heading": "SELECTED STYLE",
-        "products_count": 3
+        "left_heading": "NEW\nCOLLECTION",
+        "collection": "new-collection"
       }
     }
   },
   "order": [
-    "hero",
-    "products"
+    "custom_section_nET7CE",
+    "jw_split_collection_xCjtXg"
   ]
 }

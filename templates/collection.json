@@ -10,8 +10,7 @@
 {
   "sections": {
     "main": {
-      "type": "collection",
-      "settings": {}
+      "type": "jw-split-collection"
     }
   },
   "order": [

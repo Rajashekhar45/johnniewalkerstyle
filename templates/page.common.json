@@ -1,0 +1,13 @@
+{
+    "sections": {
+        "main": {
+            "type": "jw-split-collection",
+            "settings": {
+                "collection": "all"
+            }
+        }
+    },
+    "order": [
+        "main"
+    ]
+}

@@ -13,10 +13,15 @@
   "sections": {
     "header": {
       "type": "header",
-      "settings": {}
+      "settings": {
+        "logo_text": "JOHNNIE WALKER STYLE",
+        "menu": "main-menu",
+        "show_announcement": false,
+        "announcement_text": "SPECIAL PRICE !!! KEEP WALKING COLLECTION"
+      }
     }
   },
   "order": [
     "header"
-  ],
+  ]
 }

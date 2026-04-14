@@ -2,7 +2,7 @@
 <html lang="{{ request.locale.iso_code }}">
   <head>
     {% # Design Tokens %}
-    {% render 'css-variables' %}
+    {% render 'css-variables' %}  
 
     {% # Performance Optimization %}
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -111,6 +111,8 @@
         .sidebar-icon { width: 30px; }
         .vertical-text { font-size: 11px; }
       }
+
+      
     </style>
 
     {{ 'critical.css' | asset_url | stylesheet_tag: preload: true }}

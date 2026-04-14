@@ -15,8 +15,15 @@
         <!-- Dynamic Product Grid Wrapper -->
         <div class="jw-split-grid-wrapper">
           <div class="jw-split-grid">
-          {% assign collection = collections[section.settings.collection] %}
-          {% for product in collection.products %}
+    {% if collection %}
+  {% assign current_collection = collection %}
+{% elsif product and product.collections.size > 0 %}
+  {% assign current_collection = product.collections.first %}
+{% else %}
+  {% assign current_collection = collections['all'] %}
+{% endif %}
+
+{% for product in current_collection.products %}
             <div class="jw-split-product-card">
               <div class="product-image-container">
                 <a href="{{ product.url }}" class="product-link">
