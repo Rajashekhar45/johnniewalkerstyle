@@ -5,7 +5,7 @@
         <a href="{{ routes.root_url }}" class="logo-container">
           <img src="https://www.johnniewalkerstyle.com/upload/setting/logo/1681747566.png" alt="Johnnie Walker Style" loading="lazy" width="220" height="48">
         </a>
-        <nav class="jw-nav desktop-only">
+        <nav class="jw-nav desktop-only mobile-only">
           {% for link in section.settings.menu.links %}
             <a href="{{ link.url }}" class="jw-nav-link">{{ link.title }}</a>
           {% endfor %}
@@ -16,7 +16,7 @@
         <div class="header-icons">
           <div class="header-search-wrapper">
             <a href="{{ routes.search_url }}" class="header-icon-btn search-trigger" id="SearchTrigger" aria-label="Search">
-              <i class="fas fa-search" style="font-size: 20px;"></i>
+              <i class="fas fa-search" ></i>
             </a>
 
             <!-- Search Dropdown -->
@@ -33,7 +33,7 @@
           </div>
           <div class="header-cart-wrapper">
             <a href="{{ routes.cart_url }}" class="header-icon-btn cart-trigger" id="CartTrigger" aria-label="Cart">
-              <i class="fas fa-shopping-bag" style="font-size: 20px;"></i>
+              <i class="fas fa-shopping-bag"></i>
               <span class="cart-badge-fidelity" id="CartBadge">{{ cart.item_count }}</span>
             </a>
 
@@ -138,14 +138,14 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 90px; 
+    height: 100px; 
     padding: 0 40px;
   }
 
   .header-left { 
     display: flex; 
     align-items: center; 
-    gap: 60px; 
+    gap: 30px; 
   }
   
   .header-right { 
@@ -161,10 +161,10 @@
     transition: opacity 0.2s ease;
   }
   .logo-container:hover {
-    opacity: 0.8;
+    /*opacity: 0.8;*/
   }
   .logo-container img {
-    height: 48px; /* Maintain standard header height */
+    height: 60px; /* Maintain standard header height */
     width: auto;
     display: block;
   }
@@ -178,7 +178,7 @@
 
   .jw-nav-link {
     font-family: 'Antonio', sans-serif;
-    font-size: 18px;
+    font-size: 25px;
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -201,10 +201,11 @@
     align-items: center;
     position: relative;
     transition: var(--transition-fast);
+    font-size:23px !important;
   }
   .header-icon-btn:hover { 
     color: var(--jw-gold); 
-    transform: scale(1.1);
+    /*transform: scale(1.1);*/
   }
 
   .cart-badge-fidelity {
@@ -212,8 +213,8 @@
     font-size: 11px;
     font-weight: 700;
     position: absolute;
-    top: -12px;
-    right: -10px;
+    top: -13px;
+    right: -14px;
     background: #FFFFFF;
     color: #000000;
     width: 20px;
@@ -559,6 +560,40 @@
     text-transform: uppercase;
     margin: 0;
   }
+
+
+@media (max-width: 767px) {
+
+  .header-main{
+  padding:0px;
+  }
+
+.header-inner{
+
+  padding:0 25px !important;
+  height:100px;
+
+}
+.mobile-only{
+ display:block;
+}
+
+.header-left{
+  display:block;
+
+}
+
+
+.jw-nav-link{
+
+ font-size:20px;
+}
+
+.logo-container{
+margin-bottom:10px;}
+}
+
+
 </style>
 
 <script>
