@@ -5,7 +5,7 @@
         <a href="{{ routes.root_url }}" class="logo-container">
           <img src="https://www.johnniewalkerstyle.com/upload/setting/logo/1681747566.png" alt="Johnnie Walker Style" loading="lazy" width="220" height="48">
         </a>
-        <nav class="jw-nav desktop-only">
+        <nav class="jw-nav desktop-only mobile-only">
           {% for link in section.settings.menu.links %}
             <a href="{{ link.url }}" class="jw-nav-link">{{ link.title }}</a>
           {% endfor %}
@@ -16,6 +16,7 @@
         <div class="header-icons">
           <div class="header-search-wrapper">
             <a href="{{ routes.search_url }}" class="header-icon-btn search-trigger" id="SearchTrigger" aria-label="Search">
+              <i class="fas fa-search" ></i>
               <i class="fas fa-search" ></i>
             </a>
 
