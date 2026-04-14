@@ -1,240 +1,139 @@
+<section class="jw-split-section jw-cart-page">
+  <div class="jw-split-bg"></div>
+  <div class="jw-cart-wrapper">
+    <h1 class="jw-cart-title">YOUR CART ITEMS</h1>
+
+    {% if cart.item_count > 0 %}
+      <form action="{{ routes.cart_url }}" method="post" id="cart-form">
+
+        <div class="jw-cart-table-wrap">
+          <table class="jw-cart-table">
+            <thead>
+              <tr>
+                <th>IMAGE</th>
+                <th>PRODUCT NAME</th>
+                <th>UNIT PRICE</th>
+                <th>QTY</th>
+                <th>SUBTOTAL</th>
+                <th>ACTION</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in cart.items %}
+                <tr class="jw-cart-row">
+                  <td class="jw-cart-img-cell">
+                    {% if item.image %}
+                      <a href="{{ item.url }}">
+                        <img src="{{ item.image | image_url: width: 160 }}" alt="{{ item.product.title | escape }}" width="80" height="80" class="jw-cart-img" loading="lazy">
+                      </a>
+                    {% endif %}
+                  </td>
+                  <td class="jw-cart-name-cell">
+                    <a href="{{ item.url }}" class="jw-cart-item-name">{{ item.product.title }}</a>
+                    {% unless item.variant.title == 'Default Title' %}
+                      <span class="jw-cart-variant">{{ item.variant.title }}</span>
+                    {% endunless %}
+                  </td>
+                  <td class="jw-cart-price-cell">
+                    <span class="currency">฿</span>{{ item.price | money_without_currency }}
+                  </td>
+                  <td class="jw-cart-qty-cell">
+                    <div class="jw-qty-control">
+                      <button type="button" class="jw-qty-btn" onclick="changeCartQty(this, -1)">-</button>
+                      <input type="number" name="updates[]" value="{{ item.quantity }}" min="0" class="jw-qty-input jw-cart-qty-input">
+                      <button type="button" class="jw-qty-btn" onclick="changeCartQty(this, 1)">+</button>
+                    </div>
+                  </td>
+                  <td class="jw-cart-subtotal-cell">
+                    <span class="currency">฿</span>{{ item.line_price | money_without_currency }}
+                  </td>
+                  <td class="jw-cart-action-cell">
+                    <a href="{{ item.url_to_remove }}" class="jw-cart-remove" aria-label="Remove">×</a>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="jw-cart-footer">
+          <div class="jw-cart-footer-left">
+            <button type="submit" name="update" class="jw-cart-update-btn">UPDATE CART</button>
+            <a href="{{ routes.all_products_collection_url }}" class="jw-cart-continue-btn">CONTINUE SHOPPING</a>
+          </div>
+          <div class="jw-cart-footer-right">
+            <div class="jw-cart-totals">
+              <div class="jw-cart-total-row">
+                <span>Subtotal</span>
+                <span class="jw-cart-total-amt"><span class="currency">฿</span>{{ cart.total_price | money_without_currency }}</span>
+              </div>
+            </div>
+            <button type="submit" name="checkout" class="jw-checkout-btn">
+              <i class="fas fa-lock"></i> PROCEED TO CHECKOUT
+            </button>
+          </div>
+        </div>
+
+      </form>
+    {% else %}
+      <div class="jw-cart-empty">
+        <i class="fas fa-shopping-cart jw-cart-empty-icon"></i>
+        <p>Your cart is currently empty.</p>
+        <a href="{{ routes.all_products_collection_url }}" class="jw-cart-shop-btn">SHOP NOW</a>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
 <style>
-.jw-cart {
-  background-color: #0a0a0a;
-  min-height: 60vh;
-  padding: 60px 40px;
-  max-width: 900px;
-  margin: 0 auto;
-}
-
-.jw-cart__title {
-  color: #ffffff;
-  font-size: clamp(1.5rem, 3vw, 2.5rem);
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  margin-bottom: 40px;
-  text-align: center;
-}
-
-.jw-cart__table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.jw-cart__table th {
-  color: #c9a84c;
-  font-size: 11px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  text-align: left;
-  padding: 12px 0;
-  border-bottom: 1px solid #2a2a2a;
-}
-
-.jw-cart__table td {
-  padding: 20px 0;
-  border-bottom: 1px solid #1a1a1a;
-  vertical-align: middle;
-}
-
-.jw-cart__item-image {
-  width: 80px;
-  height: 80px;
-  object-fit: cover;
-  border: 1px solid #2a2a2a;
-}
-
-.jw-cart__item-title {
-  color: #ffffff;
-  font-size: 13px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  text-decoration: none;
-}
-
-.jw-cart__item-title:hover {
-  color: #c9a84c;
-}
-
-.jw-cart__item-remove {
-  display: inline-block;
-  margin-top: 8px;
-  color: #666666;
-  font-size: 11px;
-  text-decoration: none;
-  transition: color 0.3s ease;
-}
-
-.jw-cart__item-remove:hover {
-  color: #ff4444;
-}
-
-.jw-cart__item-price {
-  color: #c9a84c;
-  font-size: 14px;
-  font-weight: 600;
-}
-
-.jw-cart__quantity {
-  width: 60px;
-  background: #111111;
-  border: 1px solid #2a2a2a;
-  color: #ffffff;
-  padding: 8px;
-  font-size: 13px;
-  text-align: center;
-}
-
-.jw-cart__update-btn {
-  background: transparent;
-  border: 1px solid #2a2a2a;
-  color: #999999;
-  padding: 8px 16px;
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  margin-left: 8px;
-}
-
-.jw-cart__update-btn:hover {
-  border-color: #c9a84c;
-  color: #c9a84c;
-}
-
-.jw-cart__footer {
-  margin-top: 32px;
-  text-align: right;
-}
-
-.jw-cart__total {
-  color: #ffffff;
-  font-size: 18px;
-  letter-spacing: 0.1em;
-  margin-bottom: 20px;
-}
-
-.jw-cart__total-amount {
-  color: #c9a84c;
-  font-weight: 600;
-}
-
-.jw-cart__checkout-btn {
-  display: inline-block;
-  padding: 14px 48px;
-  background: transparent;
-  border: 1px solid #c9a84c;
-  color: #c9a84c;
-  font-size: 12px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.jw-cart__checkout-btn:hover {
-  background-color: #c9a84c;
-  color: #0a0a0a;
-}
-
-.jw-cart__empty {
-  text-align: center;
-  color: #666666;
-  font-size: 14px;
-  letter-spacing: 0.1em;
-  padding: 60px 0;
-}
-
-.jw-cart__empty a {
-  display: inline-block;
-  margin-top: 24px;
-  border: 1px solid #c9a84c;
-  color: #c9a84c;
-  padding: 12px 32px;
-  font-size: 12px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  text-decoration: none;
-  transition: all 0.3s ease;
-}
-
-.jw-cart__empty a:hover {
-  background-color: #c9a84c;
-  color: #0a0a0a;
-}
-
-@media (max-width: 768px) {
-  .jw-cart {
-    padding: 40px 20px;
-  }
-  .jw-cart__table th:nth-child(1),
-  .jw-cart__table td:nth-child(1) {
-    display: none;
-  }
-}
+.jw-cart-page { position: relative; background-color: #fff; overflow: hidden; padding: 0 0 80px; min-height: 70vh; }
+.jw-cart-page .jw-split-bg { position: absolute; top: 0; left: 0; width: 100%; height: 260px; background: linear-gradient(168deg, #F8B400 50%, #FFFFFF 50%); z-index: 0; }
+.jw-cart-wrapper { position: relative; z-index: 10; max-width: 1200px; margin: 0 auto; padding: 0 40px; }
+.jw-cart-title { font-family: 'Antonio', sans-serif; font-size: 48px; font-weight: 800; letter-spacing: 0.1em; color: #000; text-align: center; text-transform: uppercase; padding: 60px 0 40px; margin: 0; }
+.jw-cart-table-wrap { background: #fff; border-radius: 2px; overflow-x: auto; box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
+.jw-cart-table { width: 100%; border-collapse: collapse; }
+.jw-cart-table thead tr { background: #f8f8f8; }
+.jw-cart-table th { font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; color: #555; text-transform: uppercase; text-align: left; padding: 16px 20px; border-bottom: 2px solid #eee; }
+.jw-cart-row { border-bottom: 1px solid #f0f0f0; transition: background 0.2s; }
+.jw-cart-row:hover { background: #fffdf5; }
+.jw-cart-table td { padding: 20px; vertical-align: middle; }
+.jw-cart-img { width: 80px; height: 80px; object-fit: cover; border: 1px solid #eee; display: block; }
+.jw-cart-item-name { font-family: 'Antonio', sans-serif; font-size: 15px; font-weight: 700; color: #000; text-decoration: none; letter-spacing: 0.05em; text-transform: uppercase; display: block; margin-bottom: 4px; }
+.jw-cart-item-name:hover { color: #F8B400; }
+.jw-cart-variant { font-family: 'Montserrat', sans-serif; font-size: 11px; color: #888; letter-spacing: 0.05em; }
+.jw-cart-price-cell, .jw-cart-subtotal-cell { font-family: 'Montserrat', sans-serif; font-size: 15px; font-weight: 600; color: #000; white-space: nowrap; }
+.jw-qty-control { display: inline-flex; align-items: center; border: 1px solid #ddd; }
+.jw-qty-btn { width: 32px; height: 40px; border: none; background: #f5f5f5; font-size: 16px; cursor: pointer; transition: background 0.2s; }
+.jw-qty-btn:hover { background: #F8B400; color: #fff; }
+.jw-qty-input { width: 46px; height: 40px; border: none; border-left: 1px solid #ddd; border-right: 1px solid #ddd; text-align: center; font-family: 'Montserrat', sans-serif; font-size: 14px; }
+.jw-cart-remove { font-size: 22px; color: #bbb; text-decoration: none; line-height: 1; transition: color 0.2s; }
+.jw-cart-remove:hover { color: #e00; }
+.jw-cart-footer { display: flex; justify-content: space-between; align-items: flex-start; gap: 30px; margin-top: 30px; flex-wrap: wrap; }
+.jw-cart-footer-left { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.jw-cart-update-btn { padding: 12px 24px; border: 2px solid #000; background: transparent; font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; transition: all 0.3s; }
+.jw-cart-update-btn:hover { background: #000; color: #fff; }
+.jw-cart-continue-btn { padding: 12px 24px; border: 2px solid #F8B400; background: transparent; color: #000; font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; text-decoration: none; transition: all 0.3s; display: inline-block; }
+.jw-cart-continue-btn:hover { background: #F8B400; }
+.jw-cart-footer-right { min-width: 300px; }
+.jw-cart-totals { background: #f9f9f9; padding: 20px 24px; margin-bottom: 16px; border: 1px solid #eee; }
+.jw-cart-total-row { display: flex; justify-content: space-between; align-items: center; font-family: 'Montserrat', sans-serif; font-size: 15px; font-weight: 600; color: #000; }
+.jw-cart-total-amt { font-size: 20px; font-weight: 700; }
+.jw-checkout-btn { width: 100%; padding: 16px; background: #F8B400; color: #000; border: none; font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: background 0.3s; }
+.jw-checkout-btn:hover { background: #000; color: #fff; }
+.jw-cart-empty { text-align: center; padding: 80px 0; }
+.jw-cart-empty-icon { font-size: 60px; color: #ddd; margin-bottom: 20px; display: block; }
+.jw-cart-empty p { font-family: 'Montserrat', sans-serif; font-size: 16px; color: #888; margin-bottom: 28px; }
+.jw-cart-shop-btn { display: inline-block; padding: 14px 40px; background: #F8B400; color: #000; font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; text-decoration: none; transition: background 0.3s; }
+.jw-cart-shop-btn:hover { background: #000; color: #fff; }
+@media (max-width: 768px) { .jw-cart-wrapper { padding: 0 16px; } .jw-cart-title { font-size: 28px; padding: 40px 0 30px; } .jw-cart-footer { flex-direction: column; } .jw-cart-footer-right { width: 100%; } .jw-cart-table th:nth-child(1), .jw-cart-table td:nth-child(1) { display: none; } }
 </style>
 
-<div class="jw-cart">
-  <h1 class="jw-cart__title">{{ 'cart.title' | t }}</h1>
-
-  {% if cart.item_count > 0 %}
-    <form action="{{ routes.cart_url }}" method="post">
-      <table class="jw-cart__table">
-        <thead>
-          <tr>
-            <th></th>
-            <th>Product</th>
-            <th>Price</th>
-            <th>Quantity</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for item in cart.items %}
-            <tr>
-              <td>
-                {% if item.image %}
-                  <img
-                    class="jw-cart__item-image"
-                    src="{{ item.image | image_url: width: 160 }}"
-                    alt="{{ item.product.title | escape }}"
-                    width="80"
-                    height="80"
-                    loading="lazy"
-                  >
-                {% endif %}
-              </td>
-              <td>
-                <a href="{{ item.url }}" class="jw-cart__item-title">{{ item.product.title }}</a>
-                <br>
-                <a href="{{ item.url_to_remove }}" class="jw-cart__item-remove">Remove</a>
-              </td>
-              <td>
-                <span class="jw-cart__item-price">{{ item.price | money }}</span>
-              </td>
-              <td>
-                <input type="number" name="updates[]" value="{{ item.quantity }}" min="0" class="jw-cart__quantity">
-                <button type="submit" class="jw-cart__update-btn">Update</button>
-              </td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-
-      <div class="jw-cart__footer">
-        <p class="jw-cart__total">
-          Total: <span class="jw-cart__total-amount">{{ cart.total_price | money }}</span>
-        </p>
-        <button type="submit" name="checkout" class="jw-cart__checkout-btn">Checkout</button>
-      </div>
-    </form>
-  {% else %}
-    <div class="jw-cart__empty">
-      <p>Your cart is currently empty.</p>
-      <a href="{{ routes.all_products_collection_url }}">Continue Shopping</a>
-    </div>
-  {% endif %}
-</div>
+<script>
+function changeCartQty(btn, delta) {
+  const input = btn.parentNode.querySelector('.jw-cart-qty-input');
+  input.value = Math.max(0, parseInt(input.value || 0) + delta);
+}
+</script>
 
 {% schema %}
 {

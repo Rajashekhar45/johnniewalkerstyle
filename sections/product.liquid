@@ -1,178 +1,258 @@
+{% assign current_variant = product.selected_or_first_available_variant %}
+
+<section class="jw-split-section jw-product-page">
+  <div class="jw-split-bg"></div>
+  <div class="jw-product-wrapper">
+
+    <nav class="jw-breadcrumb">
+      <a href="{{ routes.root_url }}">HOME</a>
+      <span>/</span>
+      {% if product.collections.size > 0 %}
+        <a href="{{ product.collections.first.url }}">{{ product.collections.first.title | upcase }}</a>
+        <span>/</span>
+      {% endif %}
+      <span class="current">{{ product.title | upcase }}</span>
+    </nav>
+
+    <div class="jw-product-layout">
+      <!-- Gallery -->
+      <div class="jw-product-gallery">
+        <div class="jw-gallery-main">
+          {% if product.featured_media %}
+            <img id="mainProductImage"
+              src="{{ product.featured_media | image_url: width: 800 }}"
+              alt="{{ product.featured_media.alt | default: product.title | escape }}"
+              width="800" height="800" loading="eager" class="jw-main-img">
+            <button class="jw-fullscreen-btn" onclick="toggleFullscreen()" aria-label="Fullscreen">
+              <i class="fas fa-expand"></i>
+            </button>
+          {% else %}
+            {{ 'product-1' | placeholder_svg_tag: 'jw-main-img' }}
+          {% endif %}
+        </div>
+        {% if product.media.size > 1 %}
+          <div class="jw-gallery-thumbs">
+            {% for media in product.media %}
+              <button class="jw-thumb-btn {% if forloop.first %}active{% endif %}"
+                onclick="switchImage('{{ media | image_url: width: 800 }}', this)">
+                <img src="{{ media | image_url: width: 120 }}" alt="{{ media.alt | escape }}" width="120" height="120" loading="lazy">
+              </button>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Info -->
+      <div class="jw-product-info">
+        <h1 class="jw-product-title">{{ product.title | upcase }}</h1>
+        <p class="jw-product-price"><span class="currency">฿</span>{{ current_variant.price | money_without_currency }}</p>
+
+        {% if product.description != blank %}
+          <div class="jw-product-description">{{ product.description }}</div>
+        {% endif %}
+
+        <hr class="jw-divider">
+
+        {% form 'product', product, id: 'product-form' %}
+          <input type="hidden" name="id" value="{{ current_variant.id }}" id="variantId">
+
+          {% for option in product.options_with_values %}
+            <div class="jw-option-group">
+              <label class="jw-option-label">{{ option.name | upcase }}</label>
+              {% if option.name == 'Size' or option.name == 'size' %}
+                <div class="jw-size-swatches">
+                  {% for value in option.values %}
+                    <button type="button" class="jw-size-btn" data-option-index="{{ forloop.parentloop.index0 }}" data-value="{{ value }}" onclick="selectVariant(this)">{{ value }}</button>
+                  {% endfor %}
+                </div>
+              {% else %}
+                <select name="options[{{ option.name | escape }}]" class="jw-variant-select" onchange="updateVariantFromSelections()">
+                  {% for value in option.values %}
+                    <option value="{{ value }}" {% if option.selected_value == value %}selected{% endif %}>{{ value }}</option>
+                  {% endfor %}
+                </select>
+              {% endif %}
+            </div>
+          {% endfor %}
+
+          <div class="jw-add-row">
+            <div class="jw-qty-control">
+              <button type="button" class="jw-qty-btn" onclick="changeQty(-1)">-</button>
+              <input type="number" name="quantity" id="qty" min="1" value="1" class="jw-qty-input">
+              <button type="button" class="jw-qty-btn" onclick="changeQty(1)">+</button>
+            </div>
+            {% if current_variant.available %}
+              <button type="submit" class="jw-add-btn"><i class="fas fa-shopping-cart"></i> ADD TO CART</button>
+            {% else %}
+              <button type="button" class="jw-add-btn jw-add-btn--soldout" disabled>SOLD OUT</button>
+            {% endif %}
+          </div>
+
+          {% if product.collections.size > 0 %}
+            <p class="jw-categories">
+              <strong>Categories :</strong>
+              {% for col in product.collections %}<a href="{{ col.url }}">{{ col.title }}</a>{% unless forloop.last %}, {% endunless %}{% endfor %}
+            </p>
+          {% endif %}
+        {% endform %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RELATED PRODUCTS -->
+{% assign related_collection = product.collections.first %}
+{% if related_collection %}
+  <section class="jw-related-section">
+    <div class="jw-related-inner">
+      <h2 class="jw-related-title">RELATED PRODUCTS</h2>
+      <div class="jw-related-grid">
+        {% assign shown = 0 %}
+        {% for p in related_collection.products %}
+          {% unless p.id == product.id %}
+            {% if shown < 4 %}
+              {% assign shown = shown | plus: 1 %}
+              <div class="jw-split-product-card">
+                <div class="product-image-container">
+                  <a href="{{ p.url }}" class="product-link">
+                    <div class="product-badges">
+                      {% if p.available == false %}<span class="badge badge--sold-out">SOLD OUT</span>
+                      {% elsif p.tags contains 'new' %}<span class="badge badge--new">NEW</span>{% endif %}
+                    </div>
+                    {% if p.featured_media %}
+                      <img src="{{ p.featured_media | image_url: width: 600 }}" alt="{{ p.title | escape }}" loading="lazy" width="600" height="800" class="split-product-img primary">
+                    {% else %}
+                      {{ 'product-1' | placeholder_svg_tag: 'split-product-img primary' }}
+                    {% endif %}
+                    {% if p.media.size > 1 %}
+                      <img src="{{ p.media[1] | image_url: width: 600 }}" alt="{{ p.title | escape }}" loading="lazy" width="600" height="800" class="split-product-img secondary">
+                    {% endif %}
+                  </a>
+                  {% if p.available %}
+                    <form action="{{ routes.cart_add_url }}" method="post" enctype="multipart/form-data" class="quick-add-form">
+                      <input type="hidden" name="id" value="{{ p.variants.first.id }}">
+                      <button type="submit" class="btn-add-to-cart"><i class="fas fa-shopping-cart"></i> <span>Add To Cart</span></button>
+                    </form>
+                  {% endif %}
+                </div>
+                <div class="split-product-info">
+                  <h3 class="split-product-title"><a href="{{ p.url }}">{{ p.title }}</a></h3>
+                  <p class="split-product-price"><span class="currency">฿</span>{{ p.price | money_without_currency }}</p>
+                </div>
+              </div>
+            {% endif %}
+          {% endunless %}
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+{% endif %}
+
 <style>
-.jw-product {
-  background-color: #0a0a0a;
-  min-height: 60vh;
-  padding: 60px 40px;
-  max-width: 1200px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 48px;
-  align-items: start;
-}
-
-@media (max-width: 768px) {
-  .jw-product {
-    grid-template-columns: 1fr;
-    gap: 32px;
-    padding: 40px 20px;
-  }
-}
-
-.jw-product__gallery {
-  display: grid;
-  gap: 12px;
-}
-
-.jw-product__image {
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  object-fit: cover;
-  display: block;
-  border: 1px solid #2a2a2a;
-}
-
-.jw-product__info {
-  padding: 20px 0;
-}
-
-.jw-product__title {
-  color: #ffffff;
-  font-size: clamp(1.2rem, 2.5vw, 1.8rem);
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  margin-bottom: 16px;
-  line-height: 1.3;
-}
-
-.jw-product__price {
-  color: #c9a84c;
-  font-size: 22px;
-  font-weight: 600;
-  margin-bottom: 24px;
-}
-
-.jw-product__description {
-  color: #999999;
-  font-size: 14px;
-  line-height: 1.8;
-  letter-spacing: 0.03em;
-  margin-bottom: 32px;
-}
-
-.jw-product__variant-select {
-  width: 100%;
-  background: #111111;
-  border: 1px solid #2a2a2a;
-  color: #ffffff;
-  padding: 12px 16px;
-  font-size: 13px;
-  letter-spacing: 0.05em;
-  margin-bottom: 16px;
-  appearance: none;
-  cursor: pointer;
-}
-
-.jw-product__quantity {
-  width: 80px;
-  background: #111111;
-  border: 1px solid #2a2a2a;
-  color: #ffffff;
-  padding: 12px 16px;
-  font-size: 13px;
-  text-align: center;
-  margin-bottom: 24px;
-}
-
-.jw-product__add-btn {
-  display: block;
-  width: 100%;
-  padding: 14px;
-  background: transparent;
-  border: 1px solid #c9a84c;
-  color: #c9a84c;
-  font-size: 12px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  margin-bottom: 12px;
-}
-
-.jw-product__add-btn:hover {
-  background-color: #c9a84c;
-  color: #0a0a0a;
-}
+.jw-product-page { position: relative; background-color: #fff; overflow: hidden; padding: 0 0 60px; }
+.jw-product-page .jw-split-bg { position: absolute; top: 0; left: 0; width: 100%; height: 65%; background: linear-gradient(168deg, #F8B400 50%, #FFFFFF 50%); z-index: 0; }
+.jw-product-wrapper { position: relative; z-index: 10; max-width: 1200px; margin: 0 auto; padding: 0 40px; }
+.jw-breadcrumb { padding: 18px 0 24px; font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.1em; color: #333; text-transform: uppercase; }
+.jw-breadcrumb a { color: #333; text-decoration: none; }
+.jw-breadcrumb a:hover { color: #F8B400; }
+.jw-breadcrumb span { margin: 0 8px; }
+.jw-breadcrumb .current { color: #F8B400; }
+.jw-product-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: start; padding-top: 20px; }
+.jw-gallery-main { position: relative; background: #fff; border: 1px solid #eee; overflow: hidden; }
+.jw-main-img { width: 100%; display: block; object-fit: contain; aspect-ratio: 3/4; transition: opacity 0.3s ease; }
+.jw-fullscreen-btn { position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.4); border: none; color: #fff; padding: 8px 10px; cursor: pointer; border-radius: 2px; font-size: 14px; }
+.jw-gallery-thumbs { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.jw-thumb-btn { border: 2px solid transparent; background: none; padding: 0; cursor: pointer; width: 70px; height: 70px; overflow: hidden; }
+.jw-thumb-btn img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.jw-thumb-btn.active { border-color: #F8B400; }
+.jw-thumb-btn:hover { border-color: #000; }
+.jw-product-info { padding: 10px 0; }
+.jw-product-title { font-family: 'Antonio', sans-serif; font-size: 36px; font-weight: 800; line-height: 1.1; letter-spacing: 0.05em; color: #000; margin: 0 0 16px; }
+.jw-product-price { font-family: 'Montserrat', sans-serif; font-size: 26px; font-weight: 600; color: #000; margin: 0 0 20px; }
+.jw-product-description { font-family: 'Montserrat', sans-serif; font-size: 13px; line-height: 1.8; color: #444; margin-bottom: 24px; }
+.jw-divider { border: none; border-top: 1px solid #ddd; margin: 20px 0 24px; }
+.jw-option-group { margin-bottom: 18px; }
+.jw-option-label { display: block; font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; color: #000; margin-bottom: 10px; }
+.jw-size-swatches { display: flex; flex-wrap: wrap; gap: 8px; }
+.jw-size-btn { min-width: 44px; padding: 8px 12px; border: 1px solid #ccc; background: #fff; font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+.jw-size-btn:hover, .jw-size-btn.active { background: #F8B400; border-color: #F8B400; color: #fff; }
+.jw-variant-select { width: 100%; padding: 12px 16px; border: 1px solid #ccc; font-family: 'Montserrat', sans-serif; font-size: 13px; background: #fff; cursor: pointer; }
+.jw-add-row { display: flex; gap: 12px; align-items: center; margin-bottom: 20px; flex-wrap: wrap; }
+.jw-qty-control { display: flex; align-items: center; border: 1px solid #ccc; }
+.jw-qty-btn { width: 38px; height: 46px; border: none; background: #f5f5f5; font-size: 18px; cursor: pointer; transition: background 0.2s; }
+.jw-qty-btn:hover { background: #F8B400; color: #fff; }
+.jw-qty-input { width: 50px; height: 46px; border: none; border-left: 1px solid #ccc; border-right: 1px solid #ccc; text-align: center; font-size: 15px; }
+.jw-add-btn { flex: 1; min-width: 180px; padding: 14px 24px; background: #000; color: #fff; border: none; font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: background 0.3s; }
+.jw-add-btn:hover { background: #F8B400; }
+.jw-add-btn--soldout { opacity: 0.5; cursor: not-allowed; }
+.jw-categories { font-family: 'Montserrat', sans-serif; font-size: 12px; color: #555; margin-top: 16px; }
+.jw-categories a { color: #F8B400; text-decoration: none; }
+.jw-related-section { background: #FDF9F1; padding: 60px 0 80px; }
+.jw-related-inner { max-width: 1200px; margin: 0 auto; padding: 0 40px; }
+.jw-related-title { font-family: 'Antonio', sans-serif; font-size: 28px; font-weight: 800; letter-spacing: 0.1em; color: #F8B400; text-align: center; margin-bottom: 40px; }
+.jw-related-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+.jw-split-product-card { text-align: center; display: flex; flex-direction: column; background: transparent; }
+.product-image-container { position: relative; width: 100%; aspect-ratio: 3/4; background-color: #f7f7f7; margin-bottom: 16px; overflow: hidden; }
+.product-link { display: block; width: 100%; height: 100%; }
+.split-product-img { width: 100%; height: 100%; object-fit: contain; transition: opacity 0.6s ease; }
+.split-product-img.secondary { position: absolute; top: 0; left: 0; opacity: 0; z-index: 2; }
+.jw-split-product-card:hover .split-product-img.primary { opacity: 0; }
+.jw-split-product-card:hover .split-product-img.secondary { opacity: 1; }
+.product-badges { position: absolute; top: 10px; left: 10px; z-index: 10; pointer-events: none; }
+.badge { display: inline-block; padding: 4px 10px; font-family: 'Antonio', sans-serif; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; border-radius: 2px; }
+.badge--sold-out { background: #000; color: #fff; }
+.badge--new { background: #F8B400; color: #000; }
+.btn-add-to-cart { position: absolute; bottom: 0; left: 0; width: 100%; padding: 12px 10px; background: #F8B400; color: #fff; border: none; font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; transform: translateY(100%); opacity: 0; transition: all 0.35s; z-index: 5; }
+.jw-split-product-card:hover .btn-add-to-cart { transform: translateY(0); opacity: 1; }
+.btn-add-to-cart:hover { background: #000 !important; }
+.split-product-info { padding: 0 6px; }
+.split-product-title, .split-product-title a { font-family: 'Antonio', sans-serif; font-size: 16px; font-weight: 700; color: #000; text-transform: uppercase; text-decoration: none; margin: 0 0 6px; display: block; }
+.split-product-price { font-family: 'Montserrat', sans-serif; font-size: 16px; font-weight: 500; color: #000; margin: 0; }
+@media (max-width: 900px) { .jw-product-layout { grid-template-columns: 1fr; gap: 30px; } .jw-product-wrapper { padding: 0 16px; } }
+@media (max-width: 1024px) { .jw-related-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 768px) { .jw-related-grid { grid-template-columns: repeat(2, 1fr); } .jw-related-inner { padding: 0 16px; } }
 </style>
 
-<div class="jw-product">
-  <div class="jw-product__gallery">
-    {% for image in product.images %}
-      <img
-        class="jw-product__image"
-        src="{{ image | image_url: width: 800 }}"
-        alt="{{ image.alt | default: product.title | escape }}"
-        width="{{ image.width }}"
-        height="{{ image.height }}"
-        loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
-      >
-    {% endfor %}
-  </div>
-
-  <div class="jw-product__info">
-    <h1 class="jw-product__title">{{ product.title }}</h1>
-    <p class="jw-product__price">{{ product.price | money }}</p>
-
-    {% if product.description != blank %}
-      <div class="jw-product__description">{{ product.description }}</div>
-    {% endif %}
-
-    {% form 'product', product %}
-      {% assign current_variant = product.selected_or_first_available_variant %}
-
-      {% if product.variants.size > 1 %}
-        <select name="id" class="jw-product__variant-select">
-          {% for variant in product.variants %}
-            <option
-              value="{{ variant.id }}"
-              {% if variant == current_variant %}
-                selected="selected"
-              {% endif %}
-            >
-              {{ variant.title }} — {{ variant.price | money }}
-            </option>
-          {% endfor %}
-        </select>
-      {% else %}
-        <input type="hidden" name="id" value="{{ current_variant.id }}">
-      {% endif %}
-
-      <input
-        type="number"
-        name="quantity"
-        min="1"
-        value="1"
-        class="jw-product__quantity"
-      >
-
-      {% if current_variant.available %}
-        <button type="submit" class="jw-product__add-btn">Add to Cart</button>
-      {% else %}
-        <button type="button" class="jw-product__add-btn" style="opacity:0.5;cursor:not-allowed;" disabled>Sold Out</button>
-      {% endif %}
-
-      {{ form | payment_button }}
-    {% endform %}
-  </div>
-</div>
+<script>
+function switchImage(url, btn) {
+  document.getElementById('mainProductImage').src = url;
+  document.querySelectorAll('.jw-thumb-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function changeQty(delta) {
+  const input = document.getElementById('qty');
+  input.value = Math.max(1, parseInt(input.value || 1) + delta);
+}
+function toggleFullscreen() {
+  const img = document.getElementById('mainProductImage');
+  if (img.requestFullscreen) img.requestFullscreen();
+}
+function selectVariant(btn) {
+  btn.closest('.jw-size-swatches').querySelectorAll('.jw-size-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  updateVariantFromSelections();
+}
+function updateVariantFromSelections() {
+  const options = [];
+  document.querySelectorAll('.jw-option-group').forEach(group => {
+    const activeBtn = group.querySelector('.jw-size-btn.active');
+    if (activeBtn) options.push(activeBtn.dataset.value);
+    else { const sel = group.querySelector('.jw-variant-select'); if (sel) options.push(sel.value); }
+  });
+  const variants = {{ product.variants | json }};
+  const match = variants.find(v => options.every((opt, i) => v['option' + (i+1)] === opt));
+  if (match) {
+    document.getElementById('variantId').value = match.id;
+    const formatted = (match.price / 100).toLocaleString('th-TH', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    document.querySelector('.jw-product-price').innerHTML = '<span class="currency">฿</span>' + formatted;
+  }
+}
+</script>
 
 {% schema %}
 {
   "name": "Product",
   "settings": [],
-  "disabled_on": {
-    "groups": ["header", "footer"]
-  }
+  "disabled_on": { "groups": ["header", "footer"] }
 }
 {% endschema %}
